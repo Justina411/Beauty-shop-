@@ -1,0 +1,245 @@
+/* ================================
+   PAYMENT OVERLAY
+================================ */
+
+.payment-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+}
+
+/* ================================
+   PAYMENT CONTAINER
+================================ */
+
+.payment-container {
+  position: relative;
+  width: 900px;
+  max-width: 100%;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: paymentSlideIn 0.3s ease;
+}
+
+@keyframes paymentSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================
+   CLOSE BUTTON
+================================ */
+
+.payment-close {
+  position: absolute;
+  top: 15px;
+  right: 18px;
+  width: 35px;
+  height: 35px;
+  border: none;
+  background: transparent;
+  font-size: 28px;
+  cursor: pointer;
+  color: #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.payment-close:hover {
+  color: #2f6b45;
+}
+
+/* ================================
+   LEFT SIDE
+================================ */
+
+.payment-left {
+  padding: 10px;
+}
+
+.payment-left h2 {
+  margin-bottom: 30px;
+  font-size: 28px;
+  color: #2f6b45;
+}
+
+.payment-left h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #222;
+}
+
+.payment-left p {
+  color: #777;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+/* ================================
+   TOTAL
+================================ */
+
+.payment-total {
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.payment-total span {
+  font-size: 16px;
+  color: #555;
+}
+
+.payment-total strong {
+  font-size: 22px;
+  color: #2f6b45;
+}
+
+/* ================================
+   RIGHT SIDE
+================================ */
+
+.payment-right {
+  background: #f7faf7;
+  border-radius: 12px;
+  padding: 30px;
+}
+
+.payment-right h2 {
+  margin-bottom: 15px;
+  font-size: 24px;
+  color: #222;
+}
+
+.payment-right p {
+  color: #777;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+/* ================================
+   CHECKOUT BUTTON
+================================ */
+
+.pay-button {
+  width: 100%;
+  border: none;
+  background: #2f6b45;
+  color: white;
+  padding: 15px;
+  border-radius: 7px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.pay-button:hover {
+  background: #245536;
+  transform: translateY(-1px);
+}
+
+/* ================================
+   CONTINUE SHOPPING
+================================ */
+
+.payment-continue {
+  width: 100%;
+  margin-top: 15px;
+  padding: 14px;
+  border: 1px solid #2f6b45;
+  background: white;
+  color: #2f6b45;
+  border-radius: 7px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.payment-continue:hover {
+  background: #2f6b45;
+  color: white;
+}
+
+/* ================================
+   TABLET
+================================ */
+
+@media (max-width: 768px) {
+  .payment-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 30px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .payment-left h2 {
+    margin-bottom: 20px;
+  }
+
+  .payment-right {
+    padding: 25px;
+  }
+}
+
+/* ================================
+   MOBILE
+================================ */
+
+@media (max-width: 480px) {
+  .payment-overlay {
+    padding: 12px;
+  }
+
+  .payment-container {
+    padding: 25px 18px;
+    border-radius: 10px;
+  }
+
+  .payment-left h2 {
+    font-size: 24px;
+  }
+
+  .payment-left h3 {
+    font-size: 18px;
+  }
+
+  .payment-right {
+    padding: 20px;
+  }
+
+  .payment-right h2 {
+    font-size: 21px;
+  }
+
+  .payment-total strong {
+    font-size: 19px;
+  }
+}

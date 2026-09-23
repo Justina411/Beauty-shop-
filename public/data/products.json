@@ -1,0 +1,1086 @@
+[
+  {
+    "id": 1,
+    "name": "Glow Skincare Serum ",
+    "price": 30,
+    "description": "Brightening skin serum for daily glow",
+    "detailed_description": "Our premium Glow Skincare Serum is formulated with advanced botanical extracts and Vitamin C to target uneven tone, skin dullness, and fine lines. Gently hydrates while creating an immediate luminous glass-skin reflection suitable for daily morning application.",
+    "image": "/images/skincare3.jpg",
+    "category": "Skincare",
+    "additional_information": {    
+      "Skin Type": "Normal, Oily, Dry, Combination, Sensitive skin",
+      "Size/Volume": "30 ml, 60 ml, 80 ml",
+      "Shelf Life": "24 months",
+      "Application Time": "Morning and Evening",
+      "Packaging": "Recyclable Glass Bottle"
+    },
+    "reviews": [
+      { "id": 101, "user": "Amara O.", "rating": 5, "comment": "Absolutely love this! It cleared up my dark spots in just two weeks.", "date": "2026-05-12" },
+      { "id": 102, "user": "Chidi K.", "rating": 4, "comment": "Very lightweight and non-greasy. Works great under makeup.", "date": "2026-06-01" }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Luxury Lash Set ",
+    "price": 15,
+    "description": "Volume-enhancing natural lashes",
+    "detailed_description": "Handcrafted premium silk eyelashes engineered to deliver lightweight volume and seamless lash line integration. Reusable up to 25 times with proper storage, offering an elegant alternative to salon extension procedures.",
+    "image": "/images/lash7.jpg",
+    "category": "Lashes",
+    "additional_information": {
+      "Material": "100% Premium Faux Mink Silk",
+      "Band Type": "Flexible Cotton Thread Band",
+      "Wear Time": "Up to 15 hours continuous",
+      "Reusability": "20-25 times with proper cleaning",
+      "Length": "12mm - 15mm layered gradient"
+    },
+    "reviews": [
+      { "id": 201, "user": "Blessing E.", "rating": 5, "comment": "The band is so comfortable and soft! Barely felt like I was wearing false lashes.", "date": "2026-04-18" }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Velvet Fragrance Mist ",
+    "price": 26,
+    "description": "Soft floral long-lasting perfume",
+    "detailed_description": "An enchanting formulation opening with bright top notes of white jasmine before settling into warm base layers of velvet amber and Madagascar vanilla. A balanced aroma curated for signature everyday wear.",
+    "image": "/images/fragrance2.jpg",
+    "category": "Fragrance",
+    "additional_information": {
+      "Concentration": "Eau de Parfum (EDP)",
+      "Scent Profile": "Warm Soft Floral Musk",
+      "Longevity": "6 - 8 hours on skin",
+      "Volume": "50 ml, 100 ml",
+      "Country of Origin": "France"
+    },
+    "reviews": [
+      { "id": 301, "user": "Tunde A.", "rating": 5, "comment": "I get compliments everywhere I go. The vanilla base is rich and elegant.", "date": "2026-06-25" }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Nail Glam Polish ",
+    "price": 18,
+    "description": "Glossy salon-style nail finish",
+    "detailed_description": "High-shine, chip-resistant formula providing an ultra-glossy professional finish without requiring a UV/LED lamp setup. Nourishes nail beds with infused almond oil extract.",
+    "image": "/images/nail5.jpg",
+    "category": "Nails",
+    "additional_information": {
+      "Finish Type": "High-Gloss Gel-Like Shimmer",
+      "Curing Method": "Air Dry (No UV Lamp Required)",
+      "Drying Time": "Fast-drying within 3 minutes",
+      "Volume": "15 ml",
+      "Formulation": "9-Free Non-Toxic Formula"
+    },
+    "reviews": [
+      { "id": 401, "user": "Fatima Y.", "rating": 4, "comment": "Stays on cleanly for a full week without chipping. Gorgeous shade!", "date": "2026-03-30" }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Professional Makeup Kit",
+    "price": 40,
+    "description": "Complete glam makeup set",
+    "detailed_description": "An all-in-one artistic palette featuring ultra-pigmented matte shadows, setting powders, and cream contours. Highly buildable and designed to prevent creasing over long-duration wear.",
+    "image": "/images/makeup.jpg",
+    "category": "Makeup",
+    "additional_information": {
+      "Contents": "12 Eyeshadows, 2 Blushes, 1 Highlighter, 1 Contour",
+      "Pigmentation Level": "High-Intensity Palette",
+      "Skin Tone Match": "Universal Warm/Cool Tones",
+      "Shelf Life": "36 months after opening",
+      "Cruelty Free": "Yes, Certified PETA Cruelty-Free"
+    },
+    "reviews": [
+      { "id": 501, "user": "Zainab B.", "rating": 5, "comment": "The pigmentation on the eyeshadows is insane. Minimal fallout!", "date": "2026-05-02" }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Haircare Essentials Set ",
+    "price": 30,
+    "description": "Nourishing hair treatment formula",
+    "detailed_description": "Deep-conditioning treatment set engineered to repair dry, processed hair strands. Enriched with keratin and argan oil to seal moisture and eliminate unwanted frizz instantly.",
+    "image": "/images/haircare1.jpg",
+    "category": "Haircare",
+    "additional_information": {
+      "Hair Type": "Curly, Coily, Wavy, Straight, Chemically Treated",
+      "Key Ingredients": "Hydrolyzed Keratin, Pure Moroccan Argan Oil",
+      "Sulfate Free": "Yes, Safe for Color-Treated Hair",
+      "Included Items": "Shampoo (250ml), Conditioner (250ml), Hair Mask (100ml)",
+      "Target Concern": "Dryness, Split Ends, Frizz Control"
+    },
+    "reviews": [
+      { "id": 601, "user": "Ngozi U.", "rating": 5, "comment": "My natural curls have never felt this soft or looked this defined.", "date": "2026-07-01" }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Glow Skincare Kit ",
+    "price": 30,
+    "description": "Natural radiance skin booster",
+    "detailed_description": "A comprehensive routine pack including a hydrating cleanser and balancing toner. Works to gently exfoliate dead skin layers while protecting your natural moisture barrier.",
+    "image": "/images/skincare9.jpg",
+    "category": "Skincare",
+    "additional_information": {
+      "Skin Type": "Oily, Dull, Acne-Prone",
+      "Size/Volume": "Cleanser 150ml, Toner 100ml",
+      "Shelf Life": "24 months",
+      "Application Time": "Morning and Night",
+      "Packaging": "Recyclable Plastic Bottling"
+    },
+    "reviews": []
+  },
+  {
+    "id": 8,
+    "name": "Midnight Fragrance ",
+    "price": 32,
+    "description": "Bold evening luxury scent",
+    "detailed_description": "An intense, mysterious formulation featuring rich coffee notes blended smoothly with patchouli and smoky cedarwood. Designed explicitly for nighttime wear.",
+    "image": "/images/fragrance8.jpg",
+    "category": "Fragrance",
+    "additional_information": {
+      "Concentration": "Eau de Parfum (EDP)",
+      "Scent Profile": "Deep Woody Amber Scent",
+      "Longevity": "8 - 10 hours",
+      "Volume": "100 ml",
+      "Country of Origin": "Dubai, UAE"
+    },
+    "reviews": []
+  },
+  {
+    "id": 9,
+    "name": "Soft Lash Volume ",
+    "price": 15,
+    "description": "Lightweight everyday lashes",
+    "detailed_description": "Perfect for standard workplace environments, this minimalist lash set gives subtle accent depth without overwhelming small or hooded eye profiles.",
+    "image": "/images/lash2.jpg",
+    "category": "Lashes",
+    "additional_information": {
+      "Material": "Synthetic Silk Fibers",
+      "Band Type": "Clear Invisible Band",
+      "Wear Time": "Up to 12 hours",
+      "Reusability": "15 times",
+      "Length": "10mm everyday styling"
+    },
+    "reviews": []
+  },
+  {
+    "id": 10,
+    "name": "Classic Nail Polish ",
+    "price": 18,
+    "description": "Smooth glossy nail polish",
+    "detailed_description": "Traditional deep ruby cream polish displaying deep coverage with just a single coat. Features an extra-wide brush applicator for precise lines.",
+    "image": "/images/nail1.jpg",
+    "category": "Nails",
+    "additional_information": {
+      "Finish Type": "Classic Creme Mattified Gloss",
+      "Curing Method": "Air Dry",
+      "Drying Time": "5 minutes",
+      "Volume": "15 ml",
+      "Formulation": "Non-toxic base"
+    },
+    "reviews": []
+  },
+  {
+    "id": 11,
+    "name": "Radiant Foundation",
+    "price": 18,
+    "description": "Flawless skin coverage foundation",
+    "detailed_description": "Medium-to-full buildable coverage liquid foundation with an active skincare core. Keeps skin hydrated while ensuring a satin-smooth profile that resists sweat.",
+    "image": "/images/makeup1.jpg",
+    "category": "Makeup",
+    "additional_information": {
+      "Coverage": "Medium to Full (Buildable)",
+      "Finish": "Satin Radiance Finish",
+      "SPF Protection": "SPF 15 Infused",
+      "Volume": "30 ml",
+      "Skin Concerns": "Covers Redness, Dark Rings"
+    },
+    "reviews": []
+  },
+  {
+    "id": 12,
+    "name": "Hydrating Skincare Cream ",
+    "price": 30,
+    "description": "Anti-aging moisture repair cream",
+    "detailed_description": "Thick night cream enriched with hyaluronic acid and peptide chains. Actively seals cell moisture to plump fine wrinkles while you rest.",
+    "image": "/images/skincare6.jpg",
+    "category": "Skincare",
+    "additional_information": {
+      "Skin Type": "Dry, Mature, Flaky Skin",
+      "Size/Volume": "50 ml",
+      "Shelf Life": "18 months",
+      "Application Time": "Nightly Routine",
+      "Packaging": "Frosted Jar Packaging"
+    },
+    "reviews": []
+  },
+  {
+    "id": 13,
+    "name": "Fragrance Bloom ",
+    "price": 29,
+    "description": "Luxury everyday scent",
+    "detailed_description": "Fresh, uplifting daytime perfume with running notes of citrus zest, fresh green apple, and calming freesia.",
+    "image": "/images/fragrance5.jpg",
+    "category": "Fragrance",
+    "additional_information": {
+      "Concentration": "Eau de Toilette (EDT)",
+      "Scent Profile": "Fresh Fruity Green Citrus",
+      "Longevity": "4 - 5 hours",
+      "Volume": "80 ml",
+      "Country of Origin": "USA"
+    },
+    "reviews": []
+  },
+  {
+    "id": 14,
+    "name": "Luxury Lash ",
+    "price": 15,
+    "description": "Premium dramatic lash set",
+    "detailed_description": "Ultra-thick multi-dimensional lash clusters for maximum dynamic effect. Perfect for evening cocktail parties and stage-glam applications.",
+    "image": "/images/lash10.jpg",
+    "category": "Lashes",
+    "additional_information": {
+      "Material": "Cruelty-Free Real Mink",
+      "Band Type": "Thick Secure Black Band",
+      "Wear Time": "Up to 16 hours",
+      "Reusability": "30 uses",
+      "Length": "18mm dramatic volume"
+    },
+    "reviews": []
+  },
+  {
+    "id": 15,
+    "name": "Nail Art Glam ",
+    "price": 18,
+    "description": "Trendy creative nail design",
+    "detailed_description": "Includes professional striping brushes and metallic silver accents for high-concept DIY geometric patterns right at home.",
+    "image": "/images/nail9.jpg",
+    "category": "Nails",
+    "additional_information": {
+      "Finish Type": "Metallic Accented Cream",
+      "Curing Method": "Air Dry",
+      "Drying Time": "4 minutes",
+      "Volume": "12 ml duo-pack",
+      "Formulation": "Long-wear acrylic base"
+    },
+    "reviews": []
+  },
+  {
+    "id": 16,
+    "name": "Lip Shine Gloss",
+    "price": 12,
+    "description": "Shiny long-lasting lip gloss",
+    "detailed_description": "Non-sticky mirror sheen gloss base loaded with nourishing vitamin E. Plumps lips visibly while preventing winter chapping.",
+    "image": "/images/makeup2.jpg",
+    "category": "Makeup",
+    "additional_information": {
+      "Finish": "High-Gloss Mirror Texture",
+      "Stickiness Factor": "Zero Sticky Residue",
+      "Flavor Profile": "Subtle Sweet Mint",
+      "Volume": "6 ml tube with wand",
+      "Cruelty Free": "Yes"
+    },
+    "reviews": []
+  },
+  {
+    "id": 17,
+    "name": "Haircare Volumizer ",
+    "price": 16,
+    "description": "Thickening hair volume booster",
+    "detailed_description": "Lightweight root-lifting spray designed to expand flat, thin strands without leaving behind sticky powder casting.",
+    "image": "/images/haircare2.jpg",
+    "category": "Haircare",
+    "additional_information": {
+      "Hair Type": "Fine, Thin, Limp Hair Profiles",
+      "Key Ingredients": "Biotin Proteins, Rice Starch Complex",
+      "Sulfate Free": "Yes",
+      "Included Items": "Single Spray Bottle (200ml)",
+      "Target Concern": "Lack of Volume, Flat Hair Roots"
+    },
+    "reviews": []
+  },
+  {
+    "id": 18,
+    "name": "Glow Skincare Set ",
+    "price": 30,
+    "description": "Hydrating skin routine kit",
+    "detailed_description": "The definitive starter kit comprising a gel lotion, recovery balm, and safe daily protective broad-spectrum SPF 30 cream.",
+    "image": "/images/skincare1.jpg",
+    "category": "Skincare",
+    "additional_information": {
+      "Skin Type": "Dehydrated, Peeling, Normal skin",
+      "Size/Volume": "Lotion 100ml, Cream 50ml",
+      "Shelf Life": "24 months",
+      "Application Time": "Morning Routine Only",
+      "Packaging": "Eco-friendly cardboard boxing"
+    },
+    "reviews": []
+  },
+  {
+    "id": 19,
+    "name": "Luxury Fragrance ",
+    "price": 35,
+    "description": "Premium designer perfume",
+    "detailed_description": "An exquisite blend of Turkish rose and oud wood extracts. Exudes regal elegance, making it highly suitable for upscale banquets.",
+    "image": "/images/fragrance10.jpg",
+    "category": "Fragrance",
+    "additional_information": {
+      "Concentration": "Pure Parfum Extrait",
+      "Scent Profile": "Oriental Luxury Oud Rose",
+      "Longevity": "12+ hours extreme stay",
+      "Volume": "100 ml deluxe bottle",
+      "Country of Origin": "France"
+    },
+    "reviews": []
+  },
+  {
+    "id": 20,
+    "name": "Natural Lash Set ",
+    "price": 15,
+    "description": "Soft everyday lashes",
+    "detailed_description": "Mimics the genuine criss-cross growth pattern of real eyelashes for an completely imperceptible lash upgrade profile.",
+    "image": "/images/lash4.jpg",
+    "category": "Lashes",
+    "additional_information": {
+      "Material": "Sterilized Natural Human Hair",
+      "Band Type": "Thin Flexible Cotton Band",
+      "Wear Time": "Up to 12 hours",
+      "Reusability": "10 times with care",
+      "Length": "11mm subtle extension"
+    },
+    "reviews": []
+  },
+  {
+    "id": 21,
+    "name": "Nude Nail Glam ",
+    "price": 18,
+    "description": "Soft nude nail finish",
+    "detailed_description": "Elegant translucent pink-nude tone that coordinates nicely with any skin tone. Excellent for daily clean-girl aesthetics.",
+    "image": "/images/nail3.jpg",
+    "category": "Nails",
+    "additional_information": {
+      "Finish Type": "Sheer Translucent Gloss",
+      "Curing Method": "Air Dry",
+      "Drying Time": "4 minutes",
+      "Volume": "15 ml",
+      "Formulation": "Breathable Nail Structure"
+    },
+    "reviews": []
+  },
+  {
+    "id": 22,
+    "name": "Eye Shadow Palette",
+    "price": 25,
+    "description": "Rich color eye makeup set",
+    "detailed_description": "Contains 18 rich desert-inspired earth tones spanning from deep copper metallics to rich terracotta matte foundations.",
+    "image": "/images/makeup7.jpg",
+    "category": "Makeup",
+    "additional_information": {
+      "Contents": "18 Individual Eyeshadow Pans",
+      "Pigmentation Level": "Professional Powder Densities",
+      "Skin Tone Match": "Warm Earth Tones",
+      "Shelf Life": "24 months",
+      "Cruelty Free": "Yes"
+    },
+    "reviews": []
+  },
+  {
+    "id": 23,
+    "name": "Haircare Moisture Pack ",
+    "price": 30,
+    "description": "Deep repair hydration kit for curls",
+    "detailed_description": "Enriched with real shea butter and avocado extracts to instantly relieve extreme texture stiffness and dry split ends.",
+    "image": "/images/haircare3.jpg",
+    "category": "Haircare",
+    "additional_information": {
+      "Hair Type": "Coily, Thick 4C Curls",
+      "Key Ingredients": "Raw Shea Butter, Avocado Base Oils",
+      "Sulfate Free": "Yes",
+      "Included Items": "Leave-In Cream (300ml), Co-Wash (200ml)",
+      "Target Concern": "Severe Dehydration, Tangled Knots"
+    },
+    "reviews": []
+  },
+  {
+    "id": 24,
+    "name": "Glow Skincare Kit ",
+    "price": 30,
+    "description": "Skin glow booster formula",
+    "detailed_description": "A powerful pairing of glycolic exfoliating serum and organic rosewater facial mist to combat rough surface patches.",
+    "image": "/images/skincare8.jpg",
+    "category": "Skincare",
+    "additional_information": {
+      "Skin Type": "Rough, Textured, Normal skin",
+      "Size/Volume": "Exfoliant 50ml, Mist 100ml",
+      "Shelf Life": "24 months",
+      "Application Time": "Alternate Evening Routines",
+      "Packaging": "Amber UV-Protective Glass Bottles"
+    },
+    "reviews": []
+  },
+  {
+    "id": 25,
+    "name": "Fresh Fragrance ",
+    "price": 25,
+    "description": "Light elegant daily scent",
+    "detailed_description": "Evokes a crisp ocean breeze mixed cleanly with cooling cucumber water and chopped linen. Refreshing choice for warm summer days.",
+    "image": "/images/fragrance1.jpg",
+    "category": "Fragrance",
+    "additional_information": {
+      "Concentration": "Eau de Toilette (EDT)",
+      "Scent Profile": "Aquatic Ozonic Clean Scent",
+      "Longevity": "4 hours continuous",
+      "Volume": "50 ml",
+      "Country of Origin": "Italy"
+    },
+    "reviews": []
+  },
+  {
+    "id": 26,
+    "name": "Feather Lash ",
+    "price": 15,
+    "description": "Lightweight natural lashes",
+    "detailed_description": "Features staggered, fine lash tips that blend naturally with your original hairs for a soft, wispy appearance.",
+    "image": "/images/lash6.jpg",
+    "category": "Lashes",
+    "additional_information": {
+      "Material": "Featherweight Vegan Faux-Mink",
+      "Band Type": "Flexible Clear TPU Line",
+      "Wear Time": "Up to 12 hours",
+      "Reusability": "20 times",
+      "Length": "13mm layered design"
+    },
+    "reviews": []
+  },
+  {
+    "id": 27,
+    "name": "Nail Shine Set ",
+    "price": 18,
+    "description": "Salon-quality nail finish",
+    "detailed_description": "A dual bundle consisting of a base layer ridge-filler alongside an unscratchable glass-top sealant coat.",
+    "image": "/images/nail10.jpg",
+    "category": "Nails",
+    "additional_information": {
+      "Finish Type": "Extreme Glass Refraction Shine",
+      "Curing Method": "Air Dry",
+      "Drying Time": "2 minutes quick-set",
+      "Volume": "15 ml x 2 bottles",
+      "Formulation": "Anti-Yellowing UV Guard"
+    },
+    "reviews": []
+  },
+  {
+    "id": 28,
+    "name": "Blush Touch",
+    "price": 14,
+    "description": "Soft natural cheek glow",
+    "detailed_description": "A lightweight liquid-to-powder matte formulation that melts easily into cheeks for a subtle, long-lasting tint.",
+    "image": "/images/makeup4.jpg",
+    "category": "Makeup",
+    "additional_information": {
+      "Finish": "Soft Matte Powder Transition",
+      "Stickiness Factor": "Completely Dry Weightless Finish",
+      "Flavor Profile": "Fragrance-Free Formulation",
+      "Volume": "7 ml liquid vial",
+      "Cruelty Free": "Yes"
+    },
+    "reviews": []
+  },
+  {
+    "id": 29,
+    "name": "Haircare Treatment ",
+    "price": 50,
+    "description": "Premium scalp recovery bundle",
+    "detailed_description": "Enriched with tea tree essence and peppermint oils to calm itchy, flaking skin while strengthening your hair roots.",
+    "image": "/images/haircare4.jpg",
+    "category": "Haircare",
+    "additional_information": {
+      "Hair Type": "All Scalp Variations prone to flaking",
+      "Key Ingredients": "Organic Peppermint, Pure Tea Tree Oil Extract",
+      "Sulfate Free": "Yes, medically graded safety",
+      "Included Items": "Scalp Scrub (150g), Hydrating Serum (50ml)",
+      "Target Concern": "Dandruff, Excess Sebum Production"
+    },
+    "reviews": []
+  },
+  {
+    "id": 30,
+    "name": "Glow Skincare Kit ",
+    "price": 30,
+    "description": "Full skincare routine pack",
+    "detailed_description": "An extensive 4-step system containing a foam cleanser, clarifying toner, active serum, and oil-free daily gel cream.",
+    "image": "/images/skincare10.jpg",
+    "category": "Skincare",
+    "additional_information": {
+      "Skin Type": "Combination skin types needing balancing",
+      "Size/Volume": "4 items travel-sized pack",
+      "Shelf Life": "24 months",
+      "Application Time": "Morning and Night Routine",
+      "Packaging": "Travel Zipper Pouch Case"
+    },
+    "reviews": []
+  },
+  {
+    "id": 31,
+    "name": "Vanilla Fragrance ",
+    "price": 30,
+    "description": "Warm sweet vanilla scent",
+    "detailed_description": "A cozy comforting mist layered with spun brown sugar, light toasted coconut flakes, and rich vanilla orchid petals.",
+    "image": "/images/fragrance6.jpg",
+    "category": "Fragrance",
+    "additional_information": {
+      "Concentration": "Body Perfume Splash Mist",
+      "Scent Profile": "Gourmand Sweet Warm Vanilla",
+      "Longevity": "5 hours solid performance",
+      "Volume": "250 ml oversized mist bottle",
+      "Country of Origin": "USA"
+    },
+    "reviews": []
+  },
+  {
+    "id": 32,
+    "name": "Luxury Lash ",
+    "price": 15,
+    "description": "Natural volume lash style",
+    "detailed_description": "Subtle lengthening lash design crafted to provide eye-opening definitions without weighing down your natural eyelids.",
+    "image": "/images/lash1.jpg",
+    "category": "Lashes",
+    "additional_information": {
+      "Material": "Silk Synthetic Core Fibers",
+      "Band Type": "Cotton Flexibility Strip",
+      "Wear Time": "Up to 12 hours",
+      "Reusability": "15 clean cycles",
+      "Length": "12mm soft focus profile"
+    },
+    "reviews": []
+  },
+  {
+    "id": 33,
+    "name": "Nail Polish Set ",
+    "price": 18,
+    "description": "Bright shiny nail color",
+    "detailed_description": "A pack of two highly energetic colors (Coral Splash and Sunny Yellow) curated specifically for bright beach vacations.",
+    "image": "/images/nail2.jpg",
+    "category": "Nails",
+    "additional_information": {
+      "Finish Type": "High Gloss Creme Finishes",
+      "Curing Method": "Air Dry formulation",
+      "Drying Time": "3.5 minutes",
+      "Volume": "10 ml x 2 items inside",
+      "Formulation": "Paraben-Free Safe Composition"
+    },
+    "reviews": []
+  },
+  {
+    "id": 34,
+    "name": "Contour Kit",
+    "price": 22,
+    "description": "Face sculpting makeup palette",
+    "detailed_description": "Includes three blendable cool-toned sculpting shadows and three velvet brightening powders to define bone structures flawlessly.",
+    "image": "/images/makeup5.jpg",
+    "category": "Makeup",
+    "additional_information": {
+      "Contents": "3 Contour Depths, 3 Matte Highlighters",
+      "Pigmentation Level": "Buildable Velvet Micronized Textures",
+      "Skin Tone Match": "Medium to Deep Variations",
+      "Shelf Life": "30 months total lifespan",
+      "Cruelty Free": "Yes"
+    },
+    "reviews": []
+  },
+  {
+    "id": 35,
+    "name": "Haircare Serum ",
+    "price": 20,
+    "description": "Complete shine and frizz control",
+    "detailed_description": "A weightless silicone-free oil serum designed to smooth out flyaways and protect your hair against heat damage up to 230°C.",
+    "image": "/images/haircare5.jpg",
+    "category": "Haircare",
+    "additional_information": {
+      "Hair Type": "Coarse, Frizzy, Damaged flyaway hair",
+      "Key Ingredients": "Marula Oil, Cold-Pressed Rosehip Extract",
+      "Sulfate Free": "Yes, 100% clean processing",
+      "Included Items": "Dropper Treatment Bottle (60ml)",
+      "Target Concern": "Heat Damage Prevention, Dull Strands"
+    },
+    "reviews": []
+  },
+  {
+    "id": 36,
+    "name": "Glow Skincare Kit ",
+    "price": 30,
+    "description": "Daily skincare essentials",
+    "detailed_description": "An uncomplicated morning duo composed of a clarifying Amino-Acid wash alongside a restorative Vitamin E barrier lotion.",
+    "image": "/images/skincare4.jpg",
+    "category": "Skincare",
+    "additional_information": {
+      "Skin Type": "Sensitive, Redness-Prone, Normal skin",
+      "Size/Volume": "Cleanser 100ml, Cream 50ml",
+      "Shelf Life": "24 months",
+      "Application Time": "Every Morning",
+      "Packaging": "Recycled Plastic Compounded tubes"
+    },
+    "reviews": []
+  },
+  {
+    "id": 37,
+    "name": "Fruity Fragrance ",
+    "price": 27,
+    "description": "Fresh signature aroma",
+    "detailed_description": "A lively gourmand mixture featuring sweet crushed strawberries, wild black raspberries, and light pink sugarcane candy chords.",
+    "image": "/images/fragrance3.jpg",
+    "category": "Fragrance",
+    "additional_information": {
+      "Concentration": "Eau de Parfum (EDP)",
+      "Scent Profile": "Fruity Sweet Candy Gourmand",
+      "Longevity": "6 hours stable performance",
+      "Volume": "50 ml",
+      "Country of Origin": "France"
+    },
+    "reviews": []
+  },
+  {
+    "id": 38,
+    "name": "Volume Lash ",
+    "price": 15,
+    "description": "Soft glam lash style",
+    "detailed_description": "Medium density false eyelashes crafted to provide elegant length definition across your outer lash lines.",
+    "image": "/images/lash8.jpg",
+    "category": "Lashes",
+    "additional_information": {
+      "Material": "Poly-Silk Synthetic Filaments",
+      "Band Type": "Pliable Soft Cotton Strip",
+      "Wear Time": "Up to 14 hours total",
+      "Reusability": "20 uses with cleaning",
+      "Length": "14mm cat-eye dynamic styling"
+    },
+    "reviews": []
+  },
+  {
+    "id": 39,
+    "name": "Sparkle Nails ",
+    "price": 18,
+    "description": "Glitter nail art design",
+    "detailed_description": "A dense holographic rose-gold glitter suspended cleanly in a clear, fast-drying acrylic polish matrix.",
+    "image": "/images/nail7.jpg",
+    "category": "Nails",
+    "additional_information": {
+      "Finish Type": "Holographic High-Density Glitter",
+      "Curing Method": "Air Dry formulation",
+      "Drying Time": "4.5 minutes to fully set",
+      "Volume": "15 ml bottle size",
+      "Formulation": "Smooth Suspension Blend"
+    },
+    "reviews": []
+  },
+  {
+    "id": 40,
+    "name": "Makeup Brush Set",
+    "price": 19,
+    "description": "Professional makeup brushes",
+    "detailed_description": "A 7-piece premium kit featuring synthetic, dense fibers that pick up pigments smoothly without absorbing liquid cosmetics.",
+    "image": "/images/makeup9.jpg",
+    "category": "Makeup",
+    "additional_information": {
+      "Contents": "Powder, Foundation, Blending, Crease, Angle Brushes",
+      "Bristle Material": "Hypoallergenic Derma-Silk Synthetic Fibers",
+      "Handle Construct": "Ergonomic Matte Waterproof Wooden Handles",
+      "Shelf Life": "Lifetime with proper washing routines",
+      "Cruelty Free": "Yes"
+    },
+    "reviews": []
+  },
+  {
+    "id": 41,
+    "name": "Haircare Styling Kit ",
+    "price": 45,
+    "description": "Professional ultimate hold kit",
+    "detailed_description": "Includes a flexible sculpting clay alongside a non-flaking setting lacquer to hold advanced editorial styles all day long.",
+    "image": "/images/haircare6.jpg",
+    "category": "Haircare",
+    "additional_information": {
+      "Hair Type": "All textures requiring firm hold structural controls",
+      "Key Ingredients": "Beeswax Extracts, Hydrolyzed Wheat Proteins",
+      "Sulfate Free": "Yes",
+      "Included Items": "Styling Clay (100g), Setting Mist (150ml)",
+      "Target Concern": "Style Degradation, Wind Humidity Damage"
+    },
+    "reviews": []
+  },
+  {
+    "id": 42,
+    "name": "Glow Skincare Kit ",
+    "price": 30,
+    "description": "Acne care skin solution",
+    "detailed_description": "Targeted recovery system incorporating 2% salicylic acid and calming Centella Asiatica to clear congested pores.",
+    "image": "/images/skincare7.jpg",
+    "category": "Skincare",
+    "additional_information": {
+      "Skin Type": "Acne-Prone, Excessively Oily skin textures",
+      "Size/Volume": "Blemish Gel 30ml, Toner 100ml",
+      "Shelf Life": "18 months total lifespan",
+      "Application Time": "Nightly Routine Application",
+      "Packaging": "Precision Dropper and pump setups"
+    },
+    "reviews": []
+  },
+  {
+    "id": 43,
+    "name": "Daily Fragrance ",
+    "price": 33,
+    "description": "Light everyday scent",
+    "detailed_description": "A clean, unisex blend with bright top notes of white tea, bergamot rind, and a soft base of white musk.",
+    "image": "/images/fragrance9.jpg",
+    "category": "Fragrance",
+    "additional_information": {
+      "Concentration": "Eau de Cologne (EDC)",
+      "Scent Profile": "Clean Unisex White Tea Musky",
+      "Longevity": "3 - 4 hours wear",
+      "Volume": "100 ml spray bottle",
+      "Country of Origin": "UK"
+    },
+    "reviews": []
+  },
+  {
+    "id": 44,
+    "name": "Natural Lash ",
+    "price": 15,
+    "description": "Soft scrolled lashes",
+    "detailed_description": "Features a subtle, pre-curled upward lift designed to instantly brighten and open tired eye profiles.",
+    "image": "/images/lash9.jpg",
+    "category": "Lashes",
+    "additional_information": {
+      "Material": "Ultra-Fine Synthetic Monofilaments",
+      "Band Type": "Clear Flexible Base Frame",
+      "Wear Time": "Up to 12 hours",
+      "Reusability": "12 uses safely",
+      "Length": "12mm standard height profile"
+    },
+    "reviews": []
+  },
+  {
+    "id": 45,
+    "name": "French Nail Set ",
+    "price": 18,
+    "description": "Classic french tip nails",
+    "classic_details": "A clean set featuring a sheer pink base polish alongside a precision white tip lacquer and crescent guides.",
+    "image": "/images/nail6.jpg",
+    "category": "Nails",
+    "additional_information": {
+      "Finish Type": "Classic Clean-Cut Gloss French",
+      "Curing Method": "Air Dry formulation",
+      "Drying Time": "4 minutes to set",
+      "Volume": "12 ml x 2 items inside",
+      "Formulation": "Strengthening Calcium Matrix"
+    },
+    "reviews": []
+  },
+  {
+    "id": 46,
+    "name": "Highlight Glow",
+    "price": 20,
+    "description": "Radiant face highlight glow",
+    "detailed_description": "A velvety cream-to-powder highlighter infused with ultra-fine champagne pearls for a natural, dew-like glow.",
+    "image": "/images/makeup6.jpg",
+    "category": "Makeup",
+    "additional_information": {
+      "Finish": "Dewy Pearl Shimmer",
+      "Stickiness Factor": "Powder-Soft Touch Finish",
+      "Flavor Profile": "Fragrance Free",
+      "Volume": "8g pressed compact pan",
+      "Cruelty Free": "Yes"
+    },
+    "reviews": []
+  },
+  {
+    "id": 47,
+    "name": "Haircare Heat Shield ",
+    "price": 18,
+    "description": "Thermal protection styling spray",
+    "detailed_description": "A lightweight mist that coats hair cuticles with a thermal barrier to protect against flat iron damage.",
+    "image": "/images/haircare7.jpg",
+    "category": "Haircare",
+    "additional_information": {
+      "Hair Type": "All hair types undergoing heat styling",
+      "Key Ingredients": "Argan Extract, Silk Amino Acid Chains",
+      "Sulfate Free": "Yes, 100% clean",
+      "Included Items": "Fine-Mist Spray Bottle (250ml)",
+      "Target Concern": "Split Ends, Heat Damage, Breakage"
+    },
+    "reviews": []
+  },
+  {
+    "id": 48,
+    "name": "Skincare Cream ",
+    "price": 30,
+    "description": "Deep hydration skin cream",
+    "detailed_description": "A velvety rich moisturizer featuring ceramides and squalane to help restore and protect dry skin barriers.",
+    "image": "/images/skincare2.jpg",
+    "category": "Skincare",
+    "additional_information": {
+      "Skin Type": "Dry, Flaky, Compromised skin barriers",
+      "Size/Volume": "50 ml clean tub container",
+      "Shelf Life": "24 months",
+      "Application Time": "Morning and Evening",
+      "Packaging": "Recyclable Glass Jar packaging"
+    },
+    "reviews": []
+  },
+  {
+    "id": 49,
+    "name": "Fruity Fragrance ",
+    "price": 31,
+    "description": "Fresh fruity perfume scent",
+    "detailed_description": "A bright fragrance featuring notes of ripe passionfruit, sun-ripened mango, and soft white amber.",
+    "image": "/images/fragrance7.jpg",
+    "category": "Fragrance",
+    "additional_information": {
+      "Concentration": "Eau de Parfum (EDP)",
+      "Scent Profile": "Tropical Fruity Citrus Amber",
+      "Longevity": "6 - 7 hours stable wear",
+      "Volume": "80 ml structural glass",
+      "Country of Origin": "Spain"
+    },
+    "reviews": []
+  },
+  {
+    "id": 50,
+    "name": "Bold Lash ",
+    "price": 15,
+    "description": "Dramatic eye lash set",
+    "detailed_description": "Features dense criss-cross patterns that deliver exceptional volume and length, perfect for evening wear.",
+    "image": "/images/lash3.jpg",
+    "category": "Lashes",
+    "additional_information": {
+      "Material": "Premium Faux-Mink Fibers",
+      "Band Type": "Thick Structured Cotton Base",
+      "Wear Time": "Up to 16 hours continuous",
+      "Reusability": "25 uses with maintenance",
+      "Length": "16mm multi-layered design"
+    },
+    "reviews": []
+  },
+  {
+    "id": 51,
+    "name": "Nail Art Set ",
+    "price": 18,
+    "description": "Modern nail design style",
+    "detailed_description": "An all-in-one DIY kit featuring precision dotting tools, vinyl stencils, and three complementary pastel polishes.",
+    "image": "/images/nail8.jpg",
+    "category": "Nails",
+    "additional_information": {
+      "Finish Type": "Cream Pastel Finishes",
+      "Curing Method": "Air Dry formulation",
+      "Drying Time": "3 minutes quick-set",
+      "Volume": "8 ml x 3 bottles inside",
+      "Formulation": "Eco-Friendly Toxin-Free Matrix"
+    },
+    "reviews": []
+  },
+  {
+    "id": 52,
+    "name": "Lipstick Shade",
+    "price": 13,
+    "description": "Smooth lip color finish",
+    "detailed_description": "A highly pigmented, creamy matte lipstick that provides rich coverage and comfort in a single swipe.",
+    "image": "/images/makeup3.jpg",
+    "category": "Makeup",
+    "additional_information": {
+      "Finish": "Velvet Comfort Matte Finish",
+      "Stickiness Factor": "Zero Transfer Bleed-Proof Style",
+      "Flavor Profile": "Mild Vanilla Extract Blend",
+      "Volume": "3.8g classic bullet tube",
+      "Cruelty Free": "Yes"
+    },
+    "reviews": []
+  },
+  {
+    "id": 53,
+    "name": "Haircare Mask ",
+    "price": 22,
+    "description": "Nourishing argan oil deep mask",
+    "detailed_description": "An intensive treatment mask that deeply conditions, hydrates, and repairs heat-damaged hair shafts.",
+    "image": "/images/haircare8.jpg",
+    "category": "Haircare",
+    "additional_information": {
+      "Hair Type": "Over-Processed, Bleached, Coarse hair",
+      "Key Ingredients": "Moroccan Argan Oil, Cold-Pressed Shea Balm",
+      "Sulfate Free": "Yes, clean green recipe",
+      "Included Items": "Deep Treatment Tub (200ml)",
+      "Target Concern": "Severe Split Breakage, Texture Damage"
+    },
+    "reviews": []
+  },
+  {
+    "id": 54,
+    "name": "Glow Skincare Kit ",
+    "price": 30,
+    "description": "Deep cleansing skincare kit",
+    "detailed_description": "Features a pore-vacuuming clay mask and balancing gel wash to help regulate excess oil production.",
+    "image": "/images/skincare5.jpg",
+    "category": "Skincare",
+    "additional_information": {
+      "Skin Type": "Oily, Congested skin types with large pores",
+      "Size/Volume": "Mask 80ml, Cleanser 100ml pack",
+      "Shelf Life": "24 months total",
+      "Application Time": "Twice weekly deep cycles",
+      "Packaging": "Eco-friendly sugarcane squeeze tubes"
+    },
+    "reviews": []
+  },
+  {
+    "id": 55,
+    "name": "Fresh Fragrance ",
+    "price": 24,
+    "description": "Clean fresh scent",
+    "detailed_description": "A crisp fragrance featuring notes of morning dew, white cotton sheets, and soft aloe leaf extracts.",
+    "image": "/images/fragrance4.jpg",
+    "category": "Fragrance",
+    "additional_information": {
+      "Concentration": "Eau de Toilette (EDT)",
+      "Scent Profile": "Clean Cotton Fresh Greenery",
+      "Longevity": "4 hours total performance",
+      "Volume": "50 ml simple mist spray",
+      "Country of Origin": "Germany"
+    },
+    "reviews": []
+  },
+  {
+    "id": 56,
+    "name": "Dramatic Lash ",
+    "price": 15,
+    "description": "Full dramatic lashes",
+    "detailed_description": "Features multi-layered, clustered lash lengths that provide a dynamic, high-impact appearance.",
+    "image": "/images/lash5.jpg",
+    "category": "Lashes",
+    "additional_information": {
+      "Material": "Multi-Layered Poly-Silk Core",
+      "Band Type": "Thick Black Cotton Base Frame",
+      "Wear Time": "Up to 16 hours continuous",
+      "Reusability": "20 uses with cleaning",
+      "Length": "17mm staggered dramatic layout"
+    },
+    "reviews": []
+  },
+  {
+    "id": 57,
+    "name": "Matte Nail Set ",
+    "price": 18,
+    "description": "Matte finish nail polish",
+    "detailed_description": "An deep charcoal and navy blue polish pairing that transforms into a sleek, velvet-matte finish upon drying.",
+    "image": "/images/nail4.jpg",
+    "category": "Nails",
+    "additional_information": {
+      "Finish Type": "Velvet-Soft Flat Matte Finish",
+      "Curing Method": "Air Dry formulation",
+      "Drying Time": "3 minutes to set smoothly",
+      "Volume": "12 ml x 2 items inside",
+      "Formulation": "Anti-Chipping Polymer Matrix"
+    },
+    "reviews": []
+  },
+  {
+    "id": 58,
+    "name": "Mascara Volume",
+    "price": 16,
+    "description": "Thick lash mascara effect",
+    "detailed_description": "An intense black mascara featuring an hourglass brush that lifts, thickens, and separates lashes without clumping.",
+    "image": "/images/makeup8.jpg",
+    "category": "Makeup",
+    "additional_information": {
+      "Finish": "Carbon Black Smudge-Proof",
+      "Stickiness Factor": "Clump-Free Hourglass Fiber Application",
+      "Flavor Profile": "Fragrance Free",
+      "Volume": "10 ml tube casing",
+      "Cruelty Free": "Yes"
+    },
+    "reviews": []
+  },
+  {
+    "id": 59,
+    "name": "Haircare Conditioner ",
+    "price": 14,
+    "description": "Smooth detangling daily rinse",
+    "detailed_description": "A lightweight daily conditioner featuring aloe leaf juices to instantly smooth and detangle fine hair strands.",
+    "image": "/images/haircare9.jpg",
+    "category": "Haircare",
+    "additional_information": {
+      "Hair Type": "Fine, Normal, Knot-Prone hair profiles",
+      "Key Ingredients": "Organic Aloe Juice, Panthenol Provitamin B5",
+      "Sulfate Free": "Yes, 100% clean",
+      "Included Items": "Conditioner Bottle (400ml)",
+      "Target Concern": "Knotting, Static Flyaways, Dryness"
+    },
+    "reviews": []
+  },
+  {
+    "id": 60,
+    "name": "Glow Skincare Kit ",
+    "price": 30,
+    "description": "Skin repair hydration kit",
+    "detailed_description": "Features a soothing ceramide cream cleanser and an oat barrier lotion to help calm skin sensitivity.",
+    "image": "/images/skincare2.jpg",
+    "category": "Skincare",
+    "additional_information": {
+      "Skin Type": "Highly Sensitive, Flaking, Irritated skin",
+      "Size/Volume": "Cleanser 150ml, Lotion 75ml",
+      "Shelf Life": "24 months",
+      "Application Time": "Morning and Night Routine",
+      "Packaging": "Sterile Airless Pump Containers"
+    },
+    "reviews": []
+  },
+  {
+    "id": 61,
+    "name": "Signature Fragrance Set",
+    "price": 50,
+    "description": "Mixed luxury perfume bundle",
+    "detailed_description": "A presentation set featuring three travel-sized decants of our best-selling floral, woody, and aquatic eau de parfums.",
+    "image": "/images/fragrances.jpg",
+    "category": "Fragrance",
+    "additional_information": {
+      "Concentration": "Eau de Parfum (EDP) flight trio",
+      "Scent Profile": "Floral / Woody Amber / Aquatic clean varieties",
+      "Longevity": "6 - 8 hours per blend variety",
+      "Volume": "15 ml x 3 travel presentation vials",
+      "Country of Origin": "France / Italy mix"
+    },
+    "reviews": []
+  },
+  {
+    "id": 62,
+    "name": "Haircare Growth Oil ",
+    "price": 28,
+    "description": "Natural scalp stimulation oil formula",
+    "detailed_description": "A dynamic scalp treatment oil featuring rosemary, castor bean, and black seed oils to help nourish hair roots.",
+    "image": "/images/haircare10.jpg",
+    "category": "Haircare",
+    "additional_information": {
+      "Hair Type": "Thinning, Brittle, Coarse hair textures",
+      "Key Ingredients": "Rosemary Essential Oil, Pure Castor Bean Oil",
+      "Sulfate Free": "Yes, 100% natural oil compounds",
+      "Included Items": "Dropper Treatment Bottle (100ml)",
+      "Target Concern": "Scalp Dryness, Hair Breakage, Root Thinning"
+    },
+    "reviews": []
+  },
+  {
+    "id": 63,
+    "name": "Makeup Starter Kit",
+    "price": 45,
+    "description": "Beginner full glam set",
+    "detailed_description": "Includes a translucent setting powder, a matte setting spray, a black liquid eyeliner pen, and a blending sponge.",
+    "image": "/images/makeup10.jpg",
+    "category": "Makeup",
+    "additional_information": {
+      "Contents": "Powder (10g), Spray (50ml), Eyeliner Pen, Sponge",
+      "Pigmentation Level": "Long-Wear Performance Standards",
+      "Skin Tone Match": "Transparent Universal Finish matching",
+      "Shelf Life": "24 months open lifespan",
+      "Cruelty Free": "Yes"
+    },
+    "reviews": []
+  }
+]

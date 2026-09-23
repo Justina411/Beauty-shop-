@@ -1,0 +1,454 @@
+.book-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  min-height: 100vh;
+  background: #fff;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===========================
+   LEFT SIDE - IMAGE SLIDER
+=========================== */
+
+.book-left {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+
+/* Dark overlay on image */
+.book-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.75),
+    rgba(0, 0, 0, 0.2)
+  );
+  z-index: 1;
+}
+
+/* Image text */
+.book-image-content {
+  position: absolute;
+  left: 50px;
+  bottom: 40px;
+  z-index: 2;
+  color: #fff;
+  max-width: 420px;
+}
+
+.book-image-content span {
+  display: inline-block;
+  background: #1f6b4f;
+  padding: 8px 20px;
+  border-radius: 30px;
+  font-size: 14px;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+
+.book-image-content h1 {
+  font-size: 44px;
+  line-height: 1.15;
+  margin-bottom: 14px;
+  font-weight: 700;
+}
+
+.book-image-content p {
+  font-size: 15px;
+  line-height: 24px;
+  color: #f2f2f2;
+}
+
+/* ===========================
+   SLIDER DOTS
+=========================== */
+
+.slider-dots {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transition: 0.4s;
+}
+
+/* IMPORTANT:
+   Scoped to only slider dots.
+   This will NOT affect other
+   .active classes on your website.
+*/
+
+.dot.active {
+  background: #c8a45d;
+  width: 30px;
+  border-radius: 20px;
+}
+
+/* ===========================
+   RIGHT SIDE - BOOKING FORM
+=========================== */
+
+.book-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 150px 60px 50px;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.book-right .form-box {
+  width: 100%;
+  max-width: 500px;
+}
+
+.book-right .form-box small {
+  color: #1f6b4f;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.book-right .form-box h2 {
+  font-size: 34px;
+  margin: 6px 0;
+  color: #222;
+}
+
+.book-right .form-box p {
+  color: #777;
+  margin-bottom: 20px;
+  line-height: 24px;
+  font-size: 14px;
+}
+
+/* ===========================
+   FORM
+=========================== */
+
+.book-right .form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 14px;
+}
+
+.book-right .form-group label {
+  margin-bottom: 6px;
+  color: #222;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.book-right .form-group input,
+.book-right .form-group select,
+.book-right .form-group textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  outline: none;
+  font-size: 14px;
+  transition: 0.3s;
+  font-family: inherit;
+  box-sizing: border-box;
+  background: #fff;
+  color: #222;
+}
+
+.book-right .form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.book-right .form-group input:focus,
+.book-right .form-group select:focus,
+.book-right .form-group textarea:focus {
+  border-color: #1f6b4f;
+  box-shadow: 0 0 0 3px rgba(31, 107, 79, 0.15);
+}
+
+/* Date and time */
+
+.book-right .double-input {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* ===========================
+   BOOK BUTTON
+=========================== */
+
+.book-right .book-btn {
+  width: 100%;
+  padding: 14px;
+  background: #1f6b4f;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-top: 6px;
+}
+
+.book-right .book-btn:hover {
+  background: #c8a45d;
+  color: #fff;
+}
+
+/* ===========================
+   POPUP OVERLAY
+=========================== */
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+  animation: fadeIn 0.3s ease;
+  padding: 20px;
+}
+
+/* ===========================
+   LOADING AND SUCCESS POPUP
+=========================== */
+
+.loading-popup,
+.success-popup {
+  width: 90%;
+  max-width: 480px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px 35px;
+  text-align: center;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.18);
+  animation: popUp 0.35s ease;
+}
+
+.loader {
+  width: 65px;
+  height: 65px;
+  border: 6px solid #d8e8df;
+  border-top: 6px solid #1f6b4f;
+  border-radius: 50%;
+  margin: 0 auto 25px;
+  animation: spin 0.8s linear infinite;
+}
+
+.loading-popup h2 {
+  color: #1f6b4f;
+  margin-bottom: 12px;
+}
+
+.loading-popup p {
+  color: #666;
+}
+
+.success-icon {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 25px;
+  border-radius: 50%;
+  background: #1f6b4f;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 42px;
+  font-weight: bold;
+}
+
+.success-popup h2 {
+  color: #1f6b4f;
+  margin-bottom: 18px;
+}
+
+.success-popup p {
+  color: #555;
+  line-height: 28px;
+  margin-bottom: 30px;
+}
+
+/* ===========================
+   POPUP BUTTONS
+=========================== */
+
+.popup-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.continue-shopping-btn,
+.book-again-btn {
+  padding: 14px 28px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.continue-shopping-btn {
+  background: #1f6b4f;
+  color: #fff;
+}
+
+.continue-shopping-btn:hover {
+  background: #18523d;
+}
+
+.book-again-btn {
+  border: none;
+  background: #c8a45d;
+  color: #fff;
+}
+
+.book-again-btn:hover {
+  background: #b28e48;
+}
+
+/* ===========================
+   TABLET
+=========================== */
+
+@media (max-width: 992px) {
+  .book-page {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    overflow: visible;
+  }
+
+  .book-left {
+    min-height: 500px;
+  }
+
+  .book-right {
+    min-height: auto;
+    padding: 60px 25px;
+  }
+
+  .book-image-content {
+    left: 30px;
+    bottom: 30px;
+  }
+
+  .book-image-content h1 {
+    font-size: 36px;
+  }
+
+  .book-right .double-input {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===========================
+   MOBILE
+=========================== */
+
+@media (max-width: 600px) {
+  .book-left {
+    min-height: 450px;
+    background-position: center;
+  }
+
+  .book-image-content {
+    left: 20px;
+    right: 20px;
+    bottom: 25px;
+  }
+
+  .book-image-content h1 {
+    font-size: 28px;
+  }
+
+  .book-image-content p {
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  .book-image-content span {
+    font-size: 11px;
+    padding: 7px 14px;
+  }
+
+  .book-right .form-box h2 {
+    font-size: 28px;
+  }
+
+  .book-right {
+    padding: 40px 20px;
+  }
+
+  .loading-popup,
+  .success-popup {
+    padding: 30px 20px;
+  }
+
+  .popup-buttons {
+    flex-direction: column;
+  }
+
+  .continue-shopping-btn,
+  .book-again-btn {
+    width: 100%;
+  }
+}
+
+/* ===========================
+   ANIMATIONS
+=========================== */
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes popUp {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
