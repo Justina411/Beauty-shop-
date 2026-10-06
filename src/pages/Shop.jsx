@@ -5,38 +5,53 @@ import { useWishlist } from "../Context/WishlistContext";
 import Navbar from "../components/Navbar";
 import "../styles/shop.css";
 
+const API_BASE_URL = "https://beauty-shop-2k9f.onrender.com";
+
 const Shop = () => {
   const [products, setProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
   const { toggleWishlist, isFavourite } = useWishlist();
 
   useEffect(() => {
     setLoading(true);
-    
-    // Build API endpoint based on selected category filter
+    setError(null);
+
     const url =
       selectedCategory === "all"
-        ? "http://localhost:5000/api/products"
-        : `http://localhost:5000/api/products?category=${encodeURIComponent(selectedCategory)}`;
+        ? `${API_BASE_URL}/api/products`
+        : `${API_BASE_URL}/api/products?category=${encodeURIComponent(selectedCategory)}`;
 
     fetch(url)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Server returned status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then((data) => {
-        setProducts(data);
+        // Robust array parsing (supports direct array or wrapped object)
+        if (Array.isArray(data)) {
+          setProducts(data);
+        } else if (Array.isArray(data.products)) {
+          setProducts(data.products);
+        } else if (Array.isArray(data.data)) {
+          setProducts(data.data);
+        } else {
+          setProducts([]);
+        }
         setLoading(false);
       })
-      .catch((error) => {
-        console.error("Error loading products:", error);
+      .catch((err) => {
+        console.error("Error loading products:", err);
+        setError("Failed to load products. Please ensure the server is running.");
+        setProducts([]);
         setLoading(false);
       });
   }, [selectedCategory]);
-
-  if (loading) {
-    return <div className="loading-container">Loading Products...</div>;
-  }
 
   return (
     <>
@@ -76,56 +91,68 @@ const Shop = () => {
           ))}
         </div>
 
-        <div className="products-grid">
-          {products.map((product) => (
-            <div className="product-card" key={product._id}>
-              <div className="product-image">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  onClick={() => navigate(`/product/${product._id}`)}
-                  style={{ cursor: "pointer" }}
-                />
-
-                <button
-                  className="wishlist-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleWishlist(product);
-                  }}
-                >
-                  {isFavourite(product._id) ? <FaHeart /> : <FaRegHeart />}
-                </button>
-              </div>
-
-              <div className="product-info">
-                <span className="category-tag">{product.category}</span>
-
-                <h3
-                  onClick={() => navigate(`/product/${product._id}`)}
-                  style={{ cursor: "pointer" }}
-                >
-                  {product.name}
-                </h3>
-
-                <p>{product.description}</p>
-
-                <div className="product-footer">
-                  <span className="price">
-                    ₦{Number(product.price).toLocaleString()}
-                  </span>
+        {loading ? (
+          <div className="loading-container">Loading Products...</div>
+        ) : error ? (
+          <div className="error-container" style={{ textAlign: "center", color: "#e74c3c", padding: "40px" }}>
+            <p>{error}</p>
+          </div>
+        ) : products.length === 0 ? (
+          <div className="no-products" style={{ textAlign: "center", padding: "50px 20px", color: "#666" }}>
+            <h3>No products found in this category.</h3>
+          </div>
+        ) : (
+          <div className="products-grid">
+            {products.map((product) => (
+              <div className="product-card" key={product._id}>
+                <div className="product-image">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    onClick={() => navigate(`/product/${product._id}`)}
+                    style={{ cursor: "pointer" }}
+                  />
 
                   <button
-                    className="cart-btn"
-                    onClick={() => navigate(`/product/${product._id}`)}
+                    className="wishlist-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleWishlist(product);
+                    }}
                   >
-                    Shop now
+                    {isFavourite(product._id) ? <FaHeart /> : <FaRegHeart />}
                   </button>
                 </div>
+
+                <div className="product-info">
+                  <span className="category-tag">{product.category}</span>
+
+                  <h3
+                    onClick={() => navigate(`/product/${product._id}`)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {product.name}
+                  </h3>
+
+                  <p>{product.description}</p>
+
+                  <div className="product-footer">
+                    <span className="price">
+                      ₦{Number(product.price).toLocaleString()}
+                    </span>
+
+                    <button
+                      className="cart-btn"
+                      onClick={() => navigate(`/product/${product._id}`)}
+                    >
+                      Shop now
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </>
   );

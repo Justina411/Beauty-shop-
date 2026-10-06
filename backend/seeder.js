@@ -1,23 +1,31 @@
 // backend/seeder.js
+require("dotenv").config({ override: true });
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const fs = require("fs");
 const path = require("path");
 const Product = require("./models/Product");
-const connectDB = require("./config/db");
 
-dotenv.config();
-connectDB();
+const MONGO_URI = process.env.MONGO_URI
+  ? process.env.MONGO_URI.trim().replace(/^["']|["']$/g, "")
+  : null;
+
+if (!MONGO_URI) {
+  console.error("❌ Fatal Error: MONGO_URI is missing in process.env");
+  process.exit(1);
+}
 
 const importData = async () => {
   try {
+    console.log("⏳ Connecting to MongoDB...");
+    await mongoose.connect(MONGO_URI);
+    console.log("✅ Successfully connected to MongoDB!");
+
     await Product.deleteMany(); // Clear existing products
 
-    // Construct path that works seamlessly on Windows PowerShell
     const filePath = path.join(__dirname, "..", "public", "data", "products.json");
-    
+
     if (!fs.existsSync(filePath)) {
-      console.error(`File not found at: ${filePath}`);
+      console.error(`❌ File not found at: ${filePath}`);
       process.exit(1);
     }
 
@@ -28,10 +36,10 @@ const importData = async () => {
     const formattedProducts = products.map(({ id, ...rest }) => rest);
 
     await Product.insertMany(formattedProducts);
-    console.log("Data successfully imported to MongoDB!");
-    process.exit();
+    console.log("🎉 Data successfully imported to MongoDB!");
+    process.exit(0);
   } catch (error) {
-    console.error(`Error importing data: ${error.message}`);
+    console.error(`❌ Error importing data: ${error.message}`);
     process.exit(1);
   }
 };

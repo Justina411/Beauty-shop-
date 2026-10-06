@@ -1,625 +1,303 @@
-import React, { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import { useCart } from "../Context/CartContext";
-import "../styles/productDetail.css";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { API_BASE } from "../apiConfig";
 
-const ProductDetails = () => {
+const ProductDetails = ({ onAddToCart }) => {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const { addToCart } = useCart();
-
-  const [products, setProducts] = useState([]);
   const [product, setProduct] = useState(null);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedImage, setSelectedImage] = useState("");
+  const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [mainImage, setMainImage] = useState("");
-  const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState("additional");
-  const [selectedSize, setSelectedSize] = useState("30 ml");
-
-  // Form State for User Reviews
+  // Review form state
   const [reviewerName, setReviewerName] = useState("");
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
+  const [reviewMessage, setReviewMessage] = useState("");
 
-  // Dynamic Overlay Toast Notification State
-  const [toast, setToast] = useState({ show: false, message: "", type: "success" });
-
-  const showNotification = (message, type = "success") => {
-    setToast({ show: true, message, type });
-    setTimeout(() => {
-      setToast({ show: false, message: "", type: "success" });
-    }, 3500);
-  };
-
-  // Fetch single product from MongoDB backend
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-
-    fetch(`http://localhost:5000/api/products/${id}`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Product not found");
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`${API_BASE}/api/products/${id}`);
+        if (!res.ok) throw new Error("Failed to fetch product details.");
+        const data = await res.json();
+        
+        setProduct(data);
+        if (data.sizes && data.sizes.length > 0) {
+          setSelectedSize(data.sizes[0]);
         }
-        return res.json();
-      })
-      .then((found) => {
-        if (found) {
-          setProduct({
-            ...found,
-            reviews: found.reviews || [], // Preserve existing MongoDB reviews
-          });
-          setMainImage(
-            found.images && found.images.length > 0
-              ? found.images[0]
-              : found.image
-          );
+        if (data.images && data.images.length > 0) {
+          setSelectedImage(data.images[0]);
+        } else if (data.image) {
+          setSelectedImage(data.image);
         }
-        setQuantity(1);
-        setSelectedSize("30 ml");
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error loading product:", err);
+      } catch (err) {
         setError(err.message);
+      } finally {
         setLoading(false);
-      });
-
-    // Fetch all products to display in "Explore Related Products"
-    fetch("http://localhost:5000/api/products")
-      .then((res) => res.json())
-      .then((data) => setProducts(data))
-      .catch((err) => console.error("Error loading related products:", err));
-  }, [id]);
-
-  // Submit Review to Backend (No clearing of reviews)
-  const handleReviewSubmit = async (e) => {
-    e.preventDefault();
-    if (!comment.trim()) {
-      showNotification("Please write a review before submitting.", "error");
-      return;
-    }
-
-    setSubmittingReview(true);
-
-    const tempReview = {
-      user: reviewerName.trim() || "Anonymous Customer",
-      rating: Number(rating),
-      comment: comment.trim(),
-      createdAt: new Date(),
+      }
     };
 
+    fetchProduct();
+  }, [id]);
+
+  // Compute price based on size or variant
+  const getPriceForSize = () => {
+    if (!product) return 0;
+    
+    // Check if backend has dynamic variants pricing
+    if (product.variants && product.variants[selectedSize]) {
+      return product.variants[selectedSize];
+    }
+    
+    // Fallback tier multiplier (if applicable)
+    const dynamicPrices = {
+      "30 ml": product.price,
+      "60 ml": product.price ? product.price * 1.8 : 0,
+      "80 ml": product.price ? product.price * 2.3 : 0,
+      "100 ml": product.price ? product.price * 2.8 : 0,
+    };
+
+    return dynamicPrices[selectedSize] || product.price || 0;
+  };
+
+  const currentPrice = getPriceForSize();
+
+  const handleAddToCart = () => {
+    if (!product) return;
+
+    const productId = product._id || product.id;
+
+    const itemPayload = {
+      _id: productId,
+      id: productId,
+      title: product.title || product.name,
+      name: product.name || product.title,
+      price: currentPrice,
+      image: selectedImage || product.image,
+      selectedSize,
+      quantity,
+    };
+
+    if (onAddToCart) {
+      onAddToCart(itemPayload);
+    }
+  };
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    if (!comment.trim()) return;
+
+    setSubmittingReview(true);
+    setReviewMessage("");
+
+    const newReview = {
+      name: reviewerName || "Anonymous",
+      rating: Number(rating),
+      comment,
+      createdAt: new Date().toISOString(),
+    };
+
+    // Store previous reviews in case we need to roll back
+    const previousReviews = product.reviews || [];
+
+    // Optimistic UI update
+    setProduct((prev) => ({
+      ...prev,
+      reviews: [newReview, ...(prev.reviews || [])],
+    }));
+
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/products/${id}/reviews`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(tempReview),
-        }
-      );
+      const res = await fetch(`${API_BASE}/api/products/${id}/reviews`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newReview),
+      });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        // Append newly saved review without wiping out existing list
-        setProduct((prevProduct) => ({
-          ...prevProduct,
-          reviews: data.reviews && data.reviews.length > 0 
-            ? data.reviews 
-            : [...(prevProduct.reviews || []), tempReview],
-        }));
-
-        setReviewerName("");
-        setRating(5);
-        setComment("");
-        showNotification("✨ Thank you! Your review has been added.", "success");
-      } else {
-        showNotification(data.message || "Failed to submit review.", "error");
+      if (!res.ok) {
+        throw new Error("Failed to post review.");
       }
+
+      const updatedProduct = await res.json();
+      setProduct(updatedProduct); // Sync with actual database response
+      setReviewerName("");
+      setComment("");
+      setRating(5);
+      setReviewMessage("Review added successfully!");
     } catch (err) {
-      console.error("Error posting review:", err);
-      // Keep local state updated even if server connection lags
-      setProduct((prevProduct) => ({
-        ...prevProduct,
-        reviews: [...(prevProduct.reviews || []), tempReview],
+      // Roll back optimistic state update on error
+      setProduct((prev) => ({
+        ...prev,
+        reviews: previousReviews,
       }));
-      showNotification("Review added! Check backend connection if missing on refresh.", "success");
+      setReviewMessage("Could not post review. Please try again.");
     } finally {
       setSubmittingReview(false);
     }
   };
 
-  const sizesList = ["30 ml", "60 ml", "80 ml", "100 ml"];
-
-  const sizePrices = product
-    ? {
-        "30 ml": product.price,
-        "60 ml": product.price * 2,
-        "80 ml": product.price * 3,
-        "100 ml": product.price * 4,
-      }
-    : {};
-
-  const selectedSizePrice = product ? sizePrices[selectedSize] || product.price : 0;
-
-  // Handle Add To Cart with Auth Check & Auto-Redirect
-  const handleAddToCart = () => {
-    // Matched with auth_token key in Login.jsx
-    const token = localStorage.getItem("auth_token");
-
-    const itemPayload = {
-      ...product,
-      price: selectedSizePrice,
-      selectedSize: selectedSize,
-      quantity: quantity,
-    };
-
-    if (!token) {
-      // User is NOT logged in -> save intent and redirect to login
-      localStorage.setItem("pendingCartItem", JSON.stringify(itemPayload));
-      showNotification("Please log in to add items to your cart. Redirecting...", "error");
-      setTimeout(() => {
-        navigate("/login");
-      }, 1500);
-      return;
-    }
-
-    // User IS logged in -> add directly to cart
-    addToCart(itemPayload, quantity);
-    showNotification(`🛍️ ${quantity}x ${product.name} (${selectedSize}) added to cart!`, "success");
-  };
-
-  if (loading) {
-    return (
-      <>
-        <Navbar />
-        <h2 style={{ textAlign: "center", marginTop: "180px" }}>
-          Loading Product...
-        </h2>
-      </>
-    );
-  }
-
-  if (error || !product) {
-    return (
-      <>
-        <Navbar />
-        <div style={{ textAlign: "center", marginTop: "180px" }}>
-          <h2>Product Not Found</h2>
-          <p>{error || "The requested product does not exist."}</p>
-          <Link
-            to="/shop"
-            style={{ textDecoration: "underline", color: "#123b23" }}
-          >
-            Return to Shop
-          </Link>
-        </div>
-      </>
-    );
-  }
-
-  const relatedProducts = products
-    .filter(
-      (item) =>
-        item.category === product.category &&
-        (item._id || item.id) !== (product._id || product.id)
-    )
-    .slice(0, 4);
+  if (loading) return <div className="p-6 text-center">Loading product...</div>;
+  if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
+  if (!product) return <div className="p-6 text-center">Product not found.</div>;
 
   return (
-    <>
-      <Navbar />
-
-      {/* OVERLAY TOAST NOTIFICATION */}
-      {toast.show && (
-        <div className={`toast-overlay ${toast.type}`}>
-          <span>{toast.message}</span>
-          <button
-            className="toast-close"
-            onClick={() => setToast({ show: false, message: "", type: "success" })}
-          >
-            ✕
-          </button>
+    <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+      {/* Product Images */}
+      <div>
+        <div className="w-full h-96 mb-4 rounded-lg overflow-hidden border">
+          <img
+            src={selectedImage || product.image}
+            alt={product.title || product.name}
+            className="w-full h-full object-cover"
+          />
         </div>
-      )}
+        {product.images && product.images.length > 1 && (
+          <div className="flex space-x-2">
+            {product.images.map((img, idx) => (
+              <img
+                key={idx}
+                src={img}
+                alt=""
+                onClick={() => setSelectedImage(img)}
+                className={`w-16 h-16 object-cover rounded cursor-pointer border-2 ${
+                  selectedImage === img ? "border-black" : "border-transparent"
+                }`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
-      <div className="product-detail-page">
-        <div className="product-container">
-          {/* LEFT SIDE */}
-          <div className="product-left">
-            <div className="main-image">
-              <img src={mainImage} alt={product.name} />
-            </div>
+      {/* Product Info */}
+      <div>
+        <h1 className="text-3xl font-bold mb-2">{product.title || product.name}</h1>
+        <p className="text-2xl font-semibold text-green-700 mb-4">
+          ${currentPrice.toFixed(2)}
+        </p>
+        <p className="text-gray-600 mb-6">{product.description}</p>
 
-            <div className="thumbnail-row">
-              {(product.images || [product.image]).map((img, index) => (
-                <img
-                  key={index}
-                  src={img}
-                  alt={product.name}
-                  onClick={() => setMainImage(img)}
-                  className={mainImage === img ? "active-thumb" : ""}
-                />
+        {/* Size Selection */}
+        {product.sizes && product.sizes.length > 0 && (
+          <div className="mb-6">
+            <label className="block font-medium mb-2">Select Size:</label>
+            <div className="flex space-x-2">
+              {product.sizes.map((size) => (
+                <button
+                  key={size}
+                  onClick={() => setSelectedSize(size)}
+                  className={`px-4 py-2 border rounded ${
+                    selectedSize === size
+                      ? "bg-black text-white"
+                      : "bg-white text-black hover:bg-gray-100"
+                  }`}
+                >
+                  {size}
+                </button>
               ))}
             </div>
           </div>
+        )}
 
-          {/* RIGHT SIDE */}
-          <div className="product-right">
-            <span className="breadcrumb-category">
-              {product.category || "Skin Care"}
-            </span>
+        {/* Quantity Picker */}
+        <div className="mb-6 flex items-center space-x-4">
+          <label className="font-medium">Quantity:</label>
+          <div className="flex items-center border rounded">
+            <button
+              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+              className="px-3 py-1 text-lg font-bold hover:bg-gray-200"
+            >
+              -
+            </button>
+            <span className="px-4 py-1">{quantity}</span>
+            <button
+              onClick={() => setQuantity((q) => q + 1)}
+              className="px-3 py-1 text-lg font-bold hover:bg-gray-200"
+            >
+              +
+            </button>
+          </div>
+        </div>
 
-            <div className="title-row">
-              <h1>{product.name}</h1>
-              <span className="stock-badge">In Stock</span>
-            </div>
+        {/* Add to Cart Button */}
+        <button
+          onClick={handleAddToCart}
+          className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition"
+        >
+          Add to Cart
+        </button>
 
-            <div className="stars-row">
-              <span className="stars">★★★★★</span>
-              <span className="rating-text">
-                4.8 ({product.reviews?.length || 0} Reviews)
-              </span>
-            </div>
+        {/* Reviews Section */}
+        <div className="mt-12 border-t pt-6">
+          <h2 className="text-2xl font-bold mb-4">Customer Reviews</h2>
 
-            <div className="price-section">
-              <span className="current-price">
-                ₦{(selectedSizePrice * quantity).toLocaleString()}
-              </span>
-              <span className="old-price">
-                ₦{(selectedSizePrice * 1.25 * quantity).toLocaleString()}
-              </span>
-            </div>
-
-            <p className="description">
-              {product.description ||
-                "Detailed descriptive notes regarding use case formulas."}
-            </p>
-
-            {/* SIZE SELECTOR */}
-            <div className="size-selector-zone">
-              <label>Size/Volume</label>
-              <div className="size-pills">
-                {sizesList.map((size) => (
-                  <button
-                    key={size}
-                    className={`size-pill ${
-                      selectedSize === size ? "active" : ""
-                    }`}
-                    onClick={() => setSelectedSize(size)}
-                  >
-                    {size}
-                  </button>
+          {/* Add Review Form */}
+          <form onSubmit={handleReviewSubmit} className="mb-6 space-y-4">
+            {reviewMessage && (
+              <p className="text-sm font-semibold text-blue-600">{reviewMessage}</p>
+            )}
+            <input
+              type="text"
+              placeholder="Your Name (Optional)"
+              value={reviewerName}
+              onChange={(e) => setReviewerName(e.target.value)}
+              className="w-full border p-2 rounded"
+            />
+            <div className="flex items-center space-x-2">
+              <label className="font-medium">Rating:</label>
+              <select
+                value={rating}
+                onChange={(e) => setRating(e.target.value)}
+                className="border p-2 rounded"
+              >
+                {[5, 4, 3, 2, 1].map((r) => (
+                  <option key={r} value={r}>
+                    {r} Star{r > 1 ? "s" : ""}
+                  </option>
                 ))}
-              </div>
+              </select>
             </div>
-
-            {/* PURCHASE CONTROLS */}
-            <div className="purchase-controls">
-              <div className="quantity-counter">
-                <button
-                  onClick={() =>
-                    quantity > 1 && setQuantity(quantity - 1)
-                  }
-                >
-                  −
-                </button>
-                <span>{quantity}</span>
-                <button onClick={() => setQuantity(quantity + 1)}>+</button>
-              </div>
-
-              <button className="btn-add-cart" onClick={handleAddToCart}>
-                Add To Cart
-              </button>
-
-              <button className="wishlist-btn">
-                <span className="heart-icon">♡</span>
-              </button>
-            </div>
-
-            {/* PRODUCT META */}
-            <div className="meta-info-block">
-              <p>
-                <strong>SKU :</strong> GRFR85648HGJ
-              </p>
-              <p>
-                <strong>Tags :</strong> {product.category || "Skincare"},
-                Serums, Vitamin C
-              </p>
-              <div className="share-row">
-                <strong>Share :</strong>
-                <span className="social-icons">🌐 📘 📷 📌</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* TABS */}
-        <div className="tabss-container">
-          <div className="tabss-navbar">
+            <textarea
+              placeholder="Write your review here..."
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              required
+              rows={3}
+              className="w-full border p-2 rounded"
+            />
             <button
-              className={`tabs-link ${
-                activeTab === "description" ? "active" : ""
-              }`}
-              onClick={() => setActiveTab("description")}
+              type="submit"
+              disabled={submittingReview}
+              className="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-700 disabled:opacity-50"
             >
-              Description
+              {submittingReview ? "Submitting..." : "Submit Review"}
             </button>
-            <button
-              className={`tabs-link ${
-                activeTab === "additional" ? "active" : ""
-              }`}
-              onClick={() => setActiveTab("additional")}
-            >
-              Additional Information
-            </button>
-            <button
-              className={`tabs-link ${
-                activeTab === "reviews" ? "active" : ""
-              }`}
-              onClick={() => setActiveTab("reviews")}
-            >
-              Reviews ({product.reviews?.length || 0})
-            </button>
-          </div>
+          </form>
 
-          <div className="tabs-body">
-            {activeTab === "description" && (
-              <div className="tab-pane-content">
-                <p>
-                  {product.detailed_description ||
-                    product.description ||
-                    "Detailed descriptive notes regarding use case formulas."}
-                </p>
-              </div>
-            )}
-
-            {activeTab === "additional" && (
-              <div className="tab-pane-content">
-                <table className="specs-table">
-                  <thead>
-                    <tr>
-                      <th>Attribute</th>
-                      <th>Details</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Skin Type</td>
-                      <td>
-                        Normal, Oily, Dry, Combination, Sensitive skin
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Size/Volume</td>
-                      <td>30 ml, 60 ml, 80 ml, 100 ml</td>
-                    </tr>
-                    <tr>
-                      <td>Shelf Life</td>
-                      <td>24 months</td>
-                    </tr>
-                    <tr>
-                      <td>Application Time</td>
-                      <td>Morning and Evening</td>
-                    </tr>
-                    <tr>
-                      <td>Packaging</td>
-                      <td>Recyclable Glass Bottle</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            )}
-
-            {activeTab === "reviews" && (
-              <div className="tab-pane-content">
-                <div className="reviews-wrapper">
-                  <h3>Customer Reviews</h3>
-                  {product.reviews && product.reviews.length > 0 ? (
-                    product.reviews.map((rev, index) => (
-                      <div key={index} className="ui-review-card">
-                        <div className="rev-header">
-                          <strong>{rev.user}</strong>
-                          <span className="rev-stars">
-                            {"★".repeat(rev.rating)}
-                          </span>
-                        </div>
-                        <p className="rev-comment">{rev.comment}</p>
-                      </div>
-                    ))
-                  ) : (
-                    <p style={{ fontStyle: "italic", color: "#666" }}>
-                      No reviews yet. Be the first to review this product!
-                    </p>
-                  )}
-
-                  {/* ADD REVIEW FORM */}
-                  <div
-                    className="add-review-form-container"
-                    style={{
-                      marginTop: "40px",
-                      paddingTop: "20px",
-                      borderTop: "1px solid #ddd",
-                    }}
-                  >
-                    <h4>Write a Review</h4>
-                    <form
-                      onSubmit={handleReviewSubmit}
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "12px",
-                        maxWidth: "500px",
-                      }}
-                    >
-                      <div>
-                        <label style={{ display: "block", marginBottom: "4px" }}>
-                          Your Name:
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="e.g. Customer Name"
-                          value={reviewerName}
-                          onChange={(e) => setReviewerName(e.target.value)}
-                          style={{
-                            width: "100%",
-                            padding: "8px",
-                            borderRadius: "4px",
-                            border: "1px solid #ccc",
-                          }}
-                        />
-                      </div>
-
-                      <div>
-                        <label style={{ display: "block", marginBottom: "4px" }}>
-                          Rating:
-                        </label>
-                        <select
-                          value={rating}
-                          onChange={(e) => setRating(e.target.value)}
-                          style={{
-                            width: "100%",
-                            padding: "8px",
-                            borderRadius: "4px",
-                            border: "1px solid #ccc",
-                          }}
-                        >
-                          <option value="5">5 Stars - Excellent</option>
-                          <option value="4">4 Stars - Very Good</option>
-                          <option value="3">3 Stars - Average</option>
-                          <option value="2">2 Stars - Poor</option>
-                          <option value="1">1 Star - Terrible</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label style={{ display: "block", marginBottom: "4px" }}>
-                          Your Review:
-                        </label>
-                        <textarea
-                          rows="4"
-                          placeholder="Write your feedback here..."
-                          value={comment}
-                          onChange={(e) => setComment(e.target.value)}
-                          required
-                          style={{
-                            width: "100%",
-                            padding: "8px",
-                            borderRadius: "4px",
-                            border: "1px solid #ccc",
-                          }}
-                        ></textarea>
-                      </div>
-
-                      <button
-                        type="submit"
-                        disabled={submittingReview}
-                        style={{
-                          padding: "10px 20px",
-                          backgroundColor: "#123b23",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                          alignSelf: "flex-start",
-                        }}
-                      >
-                        {submittingReview ? "Submitting..." : "Submit Review"}
-                      </button>
-                    </form>
+          {/* Reviews List */}
+          {product.reviews && product.reviews.length > 0 ? (
+            <div className="space-y-4">
+              {product.reviews.map((rev, index) => (
+                <div key={rev._id || index} className="p-4 border rounded shadow-sm">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="font-bold">{rev.name || "Anonymous"}</span>
+                    <span className="text-yellow-500 font-bold">
+                      {"★".repeat(rev.rating)}
+                    </span>
                   </div>
+                  <p className="text-gray-700">{rev.comment}</p>
                 </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* RELATED PRODUCTS */}
-        <div className="related-products-section">
-          <div className="section-title-wrapper">
-            <span className="section-subtitle">Related Products</span>
-            <h2>Explore Related Products</h2>
-          </div>
-
-          <div className="products-display-grid">
-            {relatedProducts.map((item) => {
-              const itemID = item._id || item.id;
-              return (
-                <Link
-                  key={itemID}
-                  to={`/product/${itemID}`}
-                  className="ui-product-card"
-                >
-                  <div className="card-image-box">
-                    <span className="sale-badge">50% off</span>
-                    <div className="floating-actions">
-                      <button className="action-circle">♡</button>
-                      <button className="action-circle">⤢</button>
-                      <button className="action-circle">👜</button>
-                    </div>
-                    <img src={item.image} alt={item.name} />
-                  </div>
-
-                  <div className="card-info-box">
-                    <div className="card-meta-line">
-                      <span className="card-category-label">
-                        {item.category || "Skin Care"}
-                      </span>
-                      <span className="card-rating-badge">★ 4.9</span>
-                    </div>
-
-                    <h4>{item.name}</h4>
-
-                    <div className="card-price-line">
-                      <span className="card-now-price">
-                        ₦{item.price.toLocaleString()}
-                      </span>
-                      <span className="card-was-price">
-                        ₦{(item.price * 2).toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* TRUST BADGES */}
-        <div className="trust-badges-footer">
-          <div className="badge-card">
-            <span className="badge-icon">📦</span>
-            <div>
-              <h5>Free Shipping</h5>
-              <p>Free shipping for order over $50</p>
+              ))}
             </div>
-          </div>
-
-          <div className="badge-card">
-            <span className="badge-icon">💳</span>
-            <div>
-              <h5>Flexible Payment</h5>
-              <p>Multiple secure payment options</p>
-            </div>
-          </div>
-
-          <div className="badge-card">
-            <span className="badge-icon">🎧</span>
-            <div>
-              <h5>24×7 Support</h5>
-              <p>We support online all days.</p>
-            </div>
-          </div>
+          ) : (
+            <p className="text-gray-500">No reviews yet. Be the first to leave one!</p>
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -7,8 +7,15 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 
-// Force Google's DNS to prevent SRV resolution errors on some local ISP networks
-dns.setServers(["8.8.8.8", "8.8.4.4"]);
+// Apply DNS override only in non-production environments to avoid SRV failures on local ISPs
+if (process.env.NODE_ENV !== "production") {
+  try {
+    dns.setServers(["8.8.8.8", "8.8.4.4"]);
+    console.log("🌐 Local DNS override applied (8.8.8.8, 8.8.4.4)");
+  } catch (dnsErr) {
+    console.warn("⚠️ DNS override notice:", dnsErr.message);
+  }
+}
 
 const app = express();
 
@@ -19,21 +26,41 @@ app.use(cors());
 app.use(express.json());
 
 // ==========================================
-// 2. ENVIRONMENT VARIABLES
+// 2. ENVIRONMENT VARIABLES & VALIDATION
 // ==========================================
-const JWT_SECRET = process.env.JWT_SECRET;
-const MONGO_URI = process.env.MONGO_URI;
+const JWT_SECRET = process.env.JWT_SECRET ? process.env.JWT_SECRET.trim() : null;
+const MONGO_URI = process.env.MONGO_URI ? process.env.MONGO_URI.trim().replace(/^["']|["']$/g, "") : null;
 const PORT = process.env.PORT || 5000;
-const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY ? process.env.PAYSTACK_SECRET_KEY.trim() : null;
 
-// Make sure important environment variables exist
+console.log("🔍 Checking Environment Variables...");
+console.log("-----------------------------------");
+console.log("PORT:", PORT);
+console.log("JWT_SECRET:", JWT_SECRET ? "✅ Loaded" : "❌ MISSING");
+console.log("PAYSTACK_SECRET_KEY:", PAYSTACK_SECRET_KEY ? "✅ Loaded" : "❌ MISSING");
+console.log(
+  "MONGO_URI:",
+  MONGO_URI ? `Defined (${MONGO_URI.substring(0, 20)}...)` : "❌ MISSING"
+);
+console.log("-----------------------------------");
+
 if (!JWT_SECRET) {
-  console.error("❌ JWT_SECRET is missing.");
+  console.error("❌ Fatal Error: JWT_SECRET is missing in process.env");
   process.exit(1);
 }
 
 if (!MONGO_URI) {
-  console.error("❌ MONGO_URI is missing.");
+  console.error("❌ Fatal Error: MONGO_URI is missing in process.env");
+  process.exit(1);
+}
+
+if (
+  !MONGO_URI.startsWith("mongodb://") &&
+  !MONGO_URI.startsWith("mongodb+srv://")
+) {
+  console.error("❌ Fatal Error: MONGO_URI must begin with 'mongodb://' or 'mongodb+srv://'.");
+  console.error(`Received value: "${MONGO_URI}"`);
+  console.error("Please ensure special characters like '@' in your password are encoded as '%40'.");
   process.exit(1);
 }
 
@@ -43,8 +70,7 @@ if (!MONGO_URI) {
 app.use((req, res, next) => {
   if (mongoose.connection.readyState !== 1) {
     return res.status(503).json({
-      message:
-        "Database is not connected. Please try again in a few seconds.",
+      message: "Database is not connected. Please try again in a few seconds.",
     });
   }
 
@@ -68,13 +94,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
   email: {
     type: String,
     required: true,
     unique: true,
   },
-
   password: {
     type: String,
     required: true,
@@ -89,28 +113,23 @@ const orderSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
   reference: {
     type: String,
     required: true,
     unique: true,
   },
-
   amount: {
     type: Number,
     required: true,
   },
-
   items: {
     type: Array,
     required: true,
   },
-
   status: {
     type: String,
     default: "paid",
   },
-
   createdAt: {
     type: Date,
     default: Date.now,
@@ -125,42 +144,34 @@ const appointmentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
   email: {
     type: String,
     required: true,
   },
-
   phone: {
     type: String,
     required: true,
   },
-
   service: {
     type: String,
     required: true,
   },
-
   date: {
     type: String,
     required: true,
   },
-
   time: {
     type: String,
     required: true,
   },
-
   request: {
     type: String,
     default: "",
   },
-
   status: {
     type: String,
     default: "pending",
   },
-
   createdAt: {
     type: Date,
     default: Date.now,
@@ -169,28 +180,24 @@ const appointmentSchema = new mongoose.Schema({
 
 const Appointment = mongoose.model("Appointment", appointmentSchema);
 
-// Contact Message Schema
+// Contact Schema
 const contactSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
   },
-
   email: {
     type: String,
     required: true,
   },
-
   message: {
     type: String,
     required: true,
   },
-
   status: {
     type: String,
     default: "unread",
   },
-
   createdAt: {
     type: Date,
     default: Date.now,
@@ -204,7 +211,7 @@ const Contact = mongoose.model("Contact", contactSchema);
 // ==========================================
 const isStrongPassword = (password) => {
   const strongRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!\%*?&]{8,}$/;
 
   return strongRegex.test(password);
 };
@@ -264,7 +271,6 @@ app.post("/api/auth/signup", async (req, res) => {
 
     return res.status(201).json({
       token,
-
       user: {
         id: newUser._id,
         name: newUser.name,
@@ -339,7 +345,6 @@ app.post("/api/auth/login", async (req, res) => {
 
     return res.json({
       token,
-
       user: {
         id: existingUser._id,
         name: existingUser.name,
@@ -362,15 +367,7 @@ app.post("/api/auth/login", async (req, res) => {
 // POST: Book Appointment Route
 app.post("/api/appointments/book", async (req, res) => {
   try {
-    const {
-      name,
-      email,
-      phone,
-      service,
-      date,
-      time,
-      request,
-    } = req.body;
+    const { name, email, phone, service, date, time, request } = req.body;
 
     if (!name || !email || !phone || !service || !date || !time) {
       return res.status(400).json({
@@ -399,8 +396,7 @@ app.post("/api/appointments/book", async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message:
-        err.message || "Failed to book appointment. Please try again.",
+      message: err.message || "Failed to book appointment. Please try again.",
     });
   }
 });
@@ -408,9 +404,7 @@ app.post("/api/appointments/book", async (req, res) => {
 // GET: Fetch All Appointments
 app.get("/api/appointments", async (req, res) => {
   try {
-    const appointments = await Appointment.find().sort({
-      createdAt: -1,
-    });
+    const appointments = await Appointment.find().sort({ createdAt: -1 });
 
     return res.json({
       success: true,
@@ -458,8 +452,7 @@ app.post("/api/contact", async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message:
-        err.message || "Failed to send message. Please try again.",
+      message: err.message || "Failed to send message. Please try again.",
     });
   }
 });
@@ -467,9 +460,7 @@ app.post("/api/contact", async (req, res) => {
 // GET: Fetch All Contact Messages
 app.get("/api/contact", async (req, res) => {
   try {
-    const contacts = await Contact.find().sort({
-      createdAt: -1,
-    });
+    const contacts = await Contact.find().sort({ createdAt: -1 });
 
     return res.json({
       success: true,
@@ -490,12 +481,7 @@ app.get("/api/contact", async (req, res) => {
 // ==========================================
 app.post("/api/verify-payment", async (req, res) => {
   try {
-    const {
-      reference,
-      cartItems,
-      totalAmount,
-      userEmail,
-    } = req.body;
+    const { reference, cartItems, totalAmount, userEmail } = req.body;
 
     if (!reference) {
       return res.status(400).json({
@@ -511,12 +497,10 @@ app.post("/api/verify-payment", async (req, res) => {
       });
     }
 
-    // Verify transaction directly with Paystack API
     const response = await fetch(
       `https://api.paystack.co/transaction/verify/${reference}`,
       {
         method: "GET",
-
         headers: {
           Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
           "Content-Type": "application/json",
@@ -526,48 +510,35 @@ app.post("/api/verify-payment", async (req, res) => {
 
     const data = await response.json();
 
-    // Confirm Paystack verified status
     if (data.status && data.data.status === "success") {
-      // Prevent duplicate order creation
-      const existingOrder = await Order.findOne({
-        reference,
-      });
+      const existingOrder = await Order.findOne({ reference });
 
       if (!existingOrder) {
         await Order.create({
-          userEmail:
-            userEmail || data.data.customer.email,
-
+          userEmail: userEmail || data.data.customer.email,
           reference,
-
           amount: data.data.amount / 100,
-
           items: cartItems || [],
-
           status: "paid",
         });
       }
 
       return res.json({
         success: true,
-        message:
-          "Payment verified successfully and order recorded.",
+        message: "Payment verified successfully and order recorded.",
       });
     }
 
     return res.status(400).json({
       success: false,
-      message:
-        data.message ||
-        "Payment verification failed with Paystack.",
+      message: data.message || "Payment verification failed with Paystack.",
     });
   } catch (err) {
     console.error("PAYMENT VERIFICATION ERROR:", err);
 
     return res.status(500).json({
       success: false,
-      message:
-        err.message || "Server error during payment verification.",
+      message: err.message || "Server error during payment verification.",
     });
   }
 });
@@ -582,12 +553,10 @@ app.get("/api/stats", async (req, res) => {
       : 50;
 
     const customerCount = await User.countDocuments();
-
     const orderCount = await Order.countDocuments();
 
     return res.json({
       success: true,
-
       stats: {
         products: productCount || 50,
         customers: customerCount || 120,
@@ -598,9 +567,8 @@ app.get("/api/stats", async (req, res) => {
   } catch (err) {
     console.error("STATS FETCH ERROR:", err);
 
-    return res.status(500).json({
-      success: false,
-
+    return res.json({
+      success: true,
       stats: {
         products: 50,
         customers: 120,
@@ -616,21 +584,20 @@ app.get("/api/stats", async (req, res) => {
 // ==========================================
 const startServer = async () => {
   try {
+    console.log("⏳ Connecting to MongoDB Database...");
+
     await mongoose.connect(MONGO_URI, {
       serverSelectionTimeoutMS: 10000,
     });
 
-    console.log("Connected to MongoDB Database!");
+    console.log("✅ Successfully connected to MongoDB Database!");
 
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      console.log(`🚀 Server running on port ${PORT}`);
     });
   } catch (err) {
-    console.error(
-      "❌ MongoDB Connection Error:",
-      err.message
-    );
-
+    console.error("❌ MongoDB Connection Failure:");
+    console.error(err.message);
     process.exit(1);
   }
 };

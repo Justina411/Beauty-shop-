@@ -2,18 +2,21 @@ const express = require("express");
 const router = express.Router();
 const Product = require("../models/Product");
 
-// @desc    Get all products or filter by category
+// @desc    Get all products or filter by category (case-insensitive)
 // @route   GET /api/products
 router.get("/", async (req, res) => {
   try {
     const { category } = req.query;
     let query = {};
 
-    if (category && category !== "all") {
+    if (category && category.toLowerCase() !== "all") {
+      // Case-insensitive exact match regex
       query.category = { $regex: new RegExp(`^${category}$`, "i") };
     }
 
-    const products = await Product.find(query);
+    const products = await Product.find(query).sort({ createdAt: -1 });
+
+    // Returns array directly to React
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: "Server error fetching products", error: error.message });
