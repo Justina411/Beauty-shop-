@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { API_BASE } from "../apiConfig";
-import "../styles/ProductDetail.css";
+import "../styles/productDetail.css";
 
 const ProductDetails = ({ onAddToCart }) => {
   const { id } = useParams();
