@@ -26,7 +26,7 @@ const ProductDetails = ({ onAddToCart }) => {
         const res = await fetch(`${API_BASE}/api/products/${id}`);
         if (!res.ok) throw new Error("Failed to fetch product details.");
         const data = await res.json();
-
+        
         setProduct(data);
         if (data.sizes && data.sizes.length > 0) {
           setSelectedSize(data.sizes[0]);
@@ -49,11 +49,13 @@ const ProductDetails = ({ onAddToCart }) => {
   // Compute price based on size or variant
   const getPriceForSize = () => {
     if (!product) return 0;
-
+    
+    // Check if backend has dynamic variants pricing
     if (product.variants && product.variants[selectedSize]) {
       return product.variants[selectedSize];
     }
-
+    
+    // Fallback tier multiplier (if applicable)
     const dynamicPrices = {
       "30 ml": product.price,
       "60 ml": product.price ? product.price * 1.8 : 0,
@@ -101,8 +103,10 @@ const ProductDetails = ({ onAddToCart }) => {
       createdAt: new Date().toISOString(),
     };
 
+    // Store previous reviews in case we need to roll back
     const previousReviews = product.reviews || [];
 
+    // Optimistic UI update
     setProduct((prev) => ({
       ...prev,
       reviews: [newReview, ...(prev.reviews || [])],
@@ -120,12 +124,13 @@ const ProductDetails = ({ onAddToCart }) => {
       }
 
       const updatedProduct = await res.json();
-      setProduct(updatedProduct);
+      setProduct(updatedProduct); // Sync with actual database response
       setReviewerName("");
       setComment("");
       setRating(5);
       setReviewMessage("Review added successfully!");
     } catch (err) {
+      // Roll back optimistic state update on error
       setProduct((prev) => ({
         ...prev,
         reviews: previousReviews,
@@ -136,14 +141,14 @@ const ProductDetails = ({ onAddToCart }) => {
     }
   };
 
-  if (loading) return <div style={{ textAlign: "center", padding: "40px" }}>Loading product...</div>;
-  if (error) return <div style={{ textAlign: "center", padding: "40px", color: "red" }}>{error}</div>;
-  if (!product) return <div style={{ textAlign: "center", padding: "40px" }}>Product not found.</div>;
+  if (loading) return <div style={{ padding: "40px", textAlign: "center" }}>Loading product...</div>;
+  if (error) return <div style={{ padding: "40px", textAlign: "center", color: "red" }}>{error}</div>;
+  if (!product) return <div style={{ padding: "40px", textAlign: "center" }}>Product not found.</div>;
 
   return (
     <div className="product-detail-page">
       <div className="product-container">
-        {/* LEFT SIDE: IMAGES */}
+        {/* LEFT SIDE */}
         <div className="product-left">
           <div className="main-image">
             <img
@@ -151,7 +156,6 @@ const ProductDetails = ({ onAddToCart }) => {
               alt={product.title || product.name}
             />
           </div>
-
           {product.images && product.images.length > 1 && (
             <div className="thumbnail-row">
               {product.images.map((img, idx) => (
@@ -167,10 +171,9 @@ const ProductDetails = ({ onAddToCart }) => {
           )}
         </div>
 
-        {/* RIGHT SIDE: PRODUCT DETAILS */}
+        {/* RIGHT SIDE */}
         <div className="product-right">
           <p className="breadcrumb-category">{product.category || "Collection"}</p>
-          
           <div className="title-row">
             <h1>{product.title || product.name}</h1>
             <span className="stock-badge">In Stock</span>
@@ -185,10 +188,10 @@ const ProductDetails = ({ onAddToCart }) => {
 
           <p className="description">{product.description}</p>
 
-          {/* Size Selection */}
+          {/* SIZE / VOLUME */}
           {product.sizes && product.sizes.length > 0 && (
             <div className="size-selector-zone">
-              <label>Select Volume / Size:</label>
+              <label>Select Size / Volume:</label>
               <div className="size-pills">
                 {product.sizes.map((size) => (
                   <button
@@ -203,7 +206,7 @@ const ProductDetails = ({ onAddToCart }) => {
             </div>
           )}
 
-          {/* Purchase Controls */}
+          {/* PURCHASE CONTROLS */}
           <div className="purchase-controls">
             <div className="quantity-counter">
               <button onClick={() => setQuantity((q) => Math.max(1, q - 1))}>-</button>
@@ -216,12 +219,13 @@ const ProductDetails = ({ onAddToCart }) => {
             </button>
           </div>
 
-          {/* Reviews Section */}
+          {/* REVIEWS */}
           <div className="add-review-form-container">
             <h4>Customer Reviews</h4>
 
+            {/* Reviews List */}
             {product.reviews && product.reviews.length > 0 ? (
-              <div style={{ marginBottom: "30px" }}>
+              <div style={{ marginBottom: "24px" }}>
                 {product.reviews.map((rev, index) => (
                   <div key={rev._id || index} className="ui-review-card">
                     <div className="rev-header">
@@ -233,7 +237,7 @@ const ProductDetails = ({ onAddToCart }) => {
                 ))}
               </div>
             ) : (
-              <p style={{ color: "#777", marginBottom: "20px" }}>
+              <p style={{ color: "#888", marginBottom: "16px" }}>
                 No reviews yet. Be the first to leave one!
               </p>
             )}
@@ -250,7 +254,7 @@ const ProductDetails = ({ onAddToCart }) => {
                 <label>Your Name (Optional)</label>
                 <input
                   type="text"
-                  placeholder="John Doe"
+                  placeholder="Your Name (Optional)"
                   value={reviewerName}
                   onChange={(e) => setReviewerName(e.target.value)}
                 />
