@@ -5,10 +5,12 @@ import "../styles/productDetail.css";
 
 const ProductDetails = ({ onAddToCart }) => {
   const { id } = useParams();
+
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedImage, setSelectedImage] = useState("");
   const [quantity, setQuantity] = useState(1);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -19,23 +21,44 @@ const ProductDetails = ({ onAddToCart }) => {
   const [submittingReview, setSubmittingReview] = useState(false);
   const [reviewMessage, setReviewMessage] = useState("");
 
+  // =========================
+  // FETCH PRODUCT
+  // =========================
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
+        setError(null);
+
         const res = await fetch(`${API_BASE}/api/products/${id}`);
-        if (!res.ok) throw new Error("Failed to fetch product details.");
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch product details.");
+        }
+
         const data = await res.json();
-        
+
         setProduct(data);
+
+        // Select first available size
         if (data.sizes && data.sizes.length > 0) {
           setSelectedSize(data.sizes[0]);
+        } else {
+          setSelectedSize("");
         }
+
+        // Select first available image
         if (data.images && data.images.length > 0) {
           setSelectedImage(data.images[0]);
         } else if (data.image) {
           setSelectedImage(data.image);
+        } else {
+          setSelectedImage("");
         }
+
+        // Reset quantity when product changes
+        setQuantity(1);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -46,16 +69,23 @@ const ProductDetails = ({ onAddToCart }) => {
     fetchProduct();
   }, [id]);
 
-  // Compute price based on size or variant
+  // =========================
+  // PRICE
+  // =========================
+
   const getPriceForSize = () => {
     if (!product) return 0;
-    
-    // Check if backend has dynamic variants pricing
-    if (product.variants && product.variants[selectedSize]) {
-      return product.variants[selectedSize];
+
+    // Use backend variant pricing if available
+    if (
+      product.variants &&
+      selectedSize &&
+      product.variants[selectedSize] !== undefined
+    ) {
+      return Number(product.variants[selectedSize]);
     }
-    
-    // Fallback tier multiplier (if applicable)
+
+    // Fallback pricing
     const dynamicPrices = {
       "30 ml": product.price,
       "60 ml": product.price ? product.price * 1.8 : 0,
@@ -63,10 +93,26 @@ const ProductDetails = ({ onAddToCart }) => {
       "100 ml": product.price ? product.price * 2.8 : 0,
     };
 
-    return dynamicPrices[selectedSize] || product.price || 0;
+    return Number(dynamicPrices[selectedSize] || product.price || 0);
   };
 
   const currentPrice = getPriceForSize();
+
+  // =========================
+  // QUANTITY
+  // =========================
+
+  const handleDecreaseQuantity = () => {
+    setQuantity((q) => Math.max(1, q - 1));
+  };
+
+  const handleIncreaseQuantity = () => {
+    setQuantity((q) => q + 1);
+  };
+
+  // =========================
+  // ADD TO CART
+  // =========================
 
   const handleAddToCart = () => {
     if (!product) return;
@@ -89,211 +135,524 @@ const ProductDetails = ({ onAddToCart }) => {
     }
   };
 
+  // =========================
+  // REVIEW SUBMIT
+  // =========================
+
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
-    if (!comment.trim()) return;
+
+    if (!comment.trim()) {
+      return;
+    }
 
     setSubmittingReview(true);
     setReviewMessage("");
 
     const newReview = {
-      name: reviewerName || "Anonymous",
+      name: reviewerName.trim() || "Anonymous",
       rating: Number(rating),
-      comment,
+      comment: comment.trim(),
       createdAt: new Date().toISOString(),
     };
 
-    // Store previous reviews in case we need to roll back
+    // Save previous reviews in case request fails
     const previousReviews = product.reviews || [];
 
-    // Optimistic UI update
+    // Optimistic update
     setProduct((prev) => ({
       ...prev,
       reviews: [newReview, ...(prev.reviews || [])],
     }));
 
     try {
-      const res = await fetch(`${API_BASE}/api/products/${id}/reviews`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newReview),
-      });
+      const res = await fetch(
+        `${API_BASE}/api/products/${id}/reviews`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newReview),
+        }
+      );
 
       if (!res.ok) {
         throw new Error("Failed to post review.");
       }
 
       const updatedProduct = await res.json();
-      setProduct(updatedProduct); // Sync with actual database response
+
+      // Sync with database response
+      setProduct(updatedProduct);
+
+      // Clear form
       setReviewerName("");
       setComment("");
       setRating(5);
+
       setReviewMessage("Review added successfully!");
     } catch (err) {
-      // Roll back optimistic state update on error
+      // Roll back optimistic update
       setProduct((prev) => ({
         ...prev,
         reviews: previousReviews,
       }));
-      setReviewMessage("Could not post review. Please try again.");
+
+      setReviewMessage(
+        "Could not post review. Please try again."
+      );
     } finally {
       setSubmittingReview(false);
     }
   };
 
-  if (loading) return <div style={{ padding: "40px", textAlign: "center" }}>Loading product...</div>;
-  if (error) return <div style={{ padding: "40px", textAlign: "center", color: "red" }}>{error}</div>;
-  if (!product) return <div style={{ padding: "40px", textAlign: "center" }}>Product not found.</div>;
+  // =========================
+  // LOADING STATE
+  // =========================
+
+  if (loading) {
+    return (
+      <div className="product-page-state">
+        <div className="loading-spinner"></div>
+        <p>Loading product...</p>
+      </div>
+    );
+  }
+
+  // =========================
+  // ERROR STATE
+  // =========================
+
+  if (error) {
+    return (
+      <div className="product-page-state error-state">
+        <h3>Something went wrong</h3>
+        <p>{error}</p>
+      </div>
+    );
+  }
+
+  // =========================
+  // PRODUCT NOT FOUND
+  // =========================
+
+  if (!product) {
+    return (
+      <div className="product-page-state">
+        <h3>Product not found</h3>
+        <p>
+          The product you are looking for is unavailable.
+        </p>
+      </div>
+    );
+  }
+
+  const productName = product.title || product.name;
+  const productImage = selectedImage || product.image;
+
+  // =========================
+  // MAIN UI
+  // =========================
 
   return (
     <div className="product-detail-page">
       <div className="product-container">
-        {/* LEFT SIDE */}
+
+        {/* =========================
+            LEFT SIDE - IMAGES
+        ========================= */}
+
         <div className="product-left">
+
           <div className="main-image">
             <img
-              src={selectedImage || product.image}
-              alt={product.title || product.name}
+              src={productImage}
+              alt={productName}
             />
-          </div>
-          {product.images && product.images.length > 1 && (
-            <div className="thumbnail-row">
-              {product.images.map((img, idx) => (
-                <img
-                  key={idx}
-                  src={img}
-                  alt={`Thumbnail ${idx}`}
-                  onClick={() => setSelectedImage(img)}
-                  className={selectedImage === img ? "active-thumb" : ""}
-                />
-              ))}
+
+            <div className="image-label">
+              Beauty Collection
             </div>
-          )}
-        </div>
-
-        {/* RIGHT SIDE */}
-        <div className="product-right">
-          <p className="breadcrumb-category">{product.category || "Collection"}</p>
-          <div className="title-row">
-            <h1>{product.title || product.name}</h1>
-            <span className="stock-badge">In Stock</span>
           </div>
 
-          <div className="price-section">
-            <span className="current-price">${currentPrice.toFixed(2)}</span>
-            {product.oldPrice && (
-              <span className="old-price">${product.oldPrice.toFixed(2)}</span>
-            )}
-          </div>
-
-          <p className="description">{product.description}</p>
-
-          {/* SIZE / VOLUME */}
-          {product.sizes && product.sizes.length > 0 && (
-            <div className="size-selector-zone">
-              <label>Select Size / Volume:</label>
-              <div className="size-pills">
-                {product.sizes.map((size) => (
+          {/* Product thumbnails */}
+          {product.images &&
+            product.images.length > 1 && (
+              <div className="thumbnail-row">
+                {product.images.map((img, index) => (
                   <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`size-pill ${selectedSize === size ? "active" : ""}`}
+                    type="button"
+                    key={index}
+                    className={`thumbnail-button ${
+                      selectedImage === img
+                        ? "active-thumb"
+                        : ""
+                    }`}
+                    onClick={() =>
+                      setSelectedImage(img)
+                    }
                   >
-                    {size}
+                    <img
+                      src={img}
+                      alt={`${productName} ${index + 1}`}
+                    />
                   </button>
                 ))}
               </div>
-            </div>
-          )}
+            )}
+        </div>
 
-          {/* PURCHASE CONTROLS */}
-          <div className="purchase-controls">
-            <div className="quantity-counter">
-              <button onClick={() => setQuantity((q) => Math.max(1, q - 1))}>-</button>
-              <span>{quantity}</span>
-              <button onClick={() => setQuantity((q) => q + 1)}>+</button>
-            </div>
+        {/* =========================
+            RIGHT SIDE - PRODUCT INFO
+        ========================= */}
 
-            <button onClick={handleAddToCart} className="btn-add-cart">
-              Add to Cart
-            </button>
+        <div className="product-right">
+
+          {/* Category */}
+          <p className="breadcrumb-category">
+            {product.category || "Beauty Collection"}
+          </p>
+
+          {/* Product title */}
+          <div className="title-row">
+            <h1>{productName}</h1>
+
+            <span className="stock-badge">
+              <span className="stock-dot"></span>
+              In Stock
+            </span>
           </div>
 
-          {/* REVIEWS */}
-          <div className="add-review-form-container">
-            <h4>Customer Reviews</h4>
+          {/* Rating */}
+          <div className="stars-row">
+            <span className="stars">
+              ★★★★★
+            </span>
 
-            {/* Reviews List */}
-            {product.reviews && product.reviews.length > 0 ? (
-              <div style={{ marginBottom: "24px" }}>
-                {product.reviews.map((rev, index) => (
-                  <div key={rev._id || index} className="ui-review-card">
-                    <div className="rev-header">
-                      <strong>{rev.name || "Anonymous"}</strong>
-                      <span className="rev-stars">{"★".repeat(rev.rating)}</span>
-                    </div>
-                    <p>{rev.comment}</p>
-                  </div>
-                ))}
+            <span className="rating-text">
+              {product.reviews?.length || 0}{" "}
+              {product.reviews?.length === 1
+                ? "review"
+                : "reviews"}
+            </span>
+          </div>
+
+          {/* Price */}
+          <div className="price-section">
+            <span className="current-price">
+              ${currentPrice.toFixed(2)}
+            </span>
+
+            {product.oldPrice && (
+              <span className="old-price">
+                ${Number(product.oldPrice).toFixed(2)}
+              </span>
+            )}
+          </div>
+
+          {/* Description */}
+          <p className="description">
+            {product.description ||
+              "Discover a carefully selected beauty essential designed to complement your everyday routine."}
+          </p>
+
+          {/* =========================
+              SIZE / VOLUME
+          ========================= */}
+
+          {product.sizes &&
+            product.sizes.length > 0 && (
+              <div className="size-selector-zone">
+
+                <label>
+                  Select Size / Volume
+                </label>
+
+                <div className="size-pills">
+                  {product.sizes.map((size) => (
+                    <button
+                      type="button"
+                      key={size}
+                      onClick={() =>
+                        setSelectedSize(size)
+                      }
+                      className={`size-pill ${
+                        selectedSize === size
+                          ? "active"
+                          : ""
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+
               </div>
-            ) : (
-              <p style={{ color: "#888", marginBottom: "16px" }}>
-                No reviews yet. Be the first to leave one!
+            )}
+
+          {/* =========================
+              PURCHASE CONTROLS
+          ========================= */}
+
+          <div className="purchase-controls">
+
+            {/* Quantity */}
+            <div className="quantity-counter">
+
+              <button
+                type="button"
+                onClick={handleDecreaseQuantity}
+                aria-label="Decrease quantity"
+              >
+                −
+              </button>
+
+              <span>{quantity}</span>
+
+              <button
+                type="button"
+                onClick={handleIncreaseQuantity}
+                aria-label="Increase quantity"
+              >
+                +
+              </button>
+
+            </div>
+
+            {/* Add to cart */}
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              className="btn-add-cart"
+            >
+              Add to Cart
+            </button>
+
+          </div>
+
+          {/* =========================
+              PRODUCT INFORMATION
+          ========================= */}
+
+          <div className="meta-info-block">
+
+            <p>
+              <strong>Category:</strong>{" "}
+              {product.category || "Beauty"}
+            </p>
+
+            {product.brand && (
+              <p>
+                <strong>Brand:</strong>{" "}
+                {product.brand}
               </p>
             )}
 
-            {/* Add Review Form */}
+            <p>
+              <strong>Availability:</strong>{" "}
+              In Stock
+            </p>
+
+          </div>
+
+          {/* =========================
+              REVIEWS
+          ========================= */}
+
+          <div className="add-review-form-container">
+
+            <h4>
+              Customer Reviews
+            </h4>
+
+            {/* Existing Reviews */}
+
+            {product.reviews &&
+            product.reviews.length > 0 ? (
+              <div
+                style={{
+                  marginBottom: "24px",
+                }}
+              >
+                {product.reviews.map(
+                  (rev, index) => (
+                    <div
+                      key={
+                        rev._id || index
+                      }
+                      className="ui-review-card"
+                    >
+
+                      <div className="rev-header">
+
+                        <strong>
+                          {rev.name ||
+                            "Anonymous"}
+                        </strong>
+
+                        <span className="rev-stars">
+                          {"★".repeat(
+                            Math.max(
+                              0,
+                              Math.min(
+                                5,
+                                Number(
+                                  rev.rating
+                                ) || 0
+                              )
+                            )
+                          )}
+                        </span>
+
+                      </div>
+
+                      <p>
+                        {rev.comment}
+                      </p>
+
+                    </div>
+                  )
+                )}
+              </div>
+            ) : (
+              <p
+                style={{
+                  color: "#888",
+                  marginBottom: "20px",
+                  fontSize: "13px",
+                }}
+              >
+                No reviews yet. Be the first
+                to leave one!
+              </p>
+            )}
+
+            {/* =========================
+                REVIEW FORM
+            ========================= */}
+
             <form onSubmit={handleReviewSubmit}>
+
+              {/* Review message */}
+
               {reviewMessage && (
-                <p style={{ color: "#123b23", fontWeight: "600", marginBottom: "10px" }}>
+                <p
+                  style={{
+                    color:
+                      reviewMessage.includes(
+                        "successfully"
+                      )
+                        ? "#123b23"
+                        : "#a52a2a",
+                    fontWeight: "600",
+                    fontSize: "13px",
+                    marginBottom: "15px",
+                  }}
+                >
                   {reviewMessage}
                 </p>
               )}
-              
+
+              {/* Name */}
+
               <div className="review-form-group">
-                <label>Your Name (Optional)</label>
+
+                <label htmlFor="reviewerName">
+                  Your Name
+                </label>
+
                 <input
+                  id="reviewerName"
                   type="text"
-                  placeholder="Your Name (Optional)"
+                  placeholder="Your name (optional)"
                   value={reviewerName}
-                  onChange={(e) => setReviewerName(e.target.value)}
+                  onChange={(e) =>
+                    setReviewerName(
+                      e.target.value
+                    )
+                  }
                 />
+
               </div>
 
+              {/* Rating */}
+
               <div className="review-form-group">
-                <label>Rating</label>
+
+                <label htmlFor="rating">
+                  Rating
+                </label>
+
                 <select
+                  id="rating"
                   value={rating}
-                  onChange={(e) => setRating(e.target.value)}
+                  onChange={(e) =>
+                    setRating(
+                      Number(
+                        e.target.value
+                      )
+                    )
+                  }
                 >
-                  {[5, 4, 3, 2, 1].map((r) => (
-                    <option key={r} value={r}>
-                      {r} Star{r > 1 ? "s" : ""}
-                    </option>
-                  ))}
+                  {[5, 4, 3, 2, 1].map(
+                    (r) => (
+                      <option
+                        key={r}
+                        value={r}
+                      >
+                        {r} Star
+                        {r > 1
+                          ? "s"
+                          : ""}
+                      </option>
+                    )
+                  )}
                 </select>
+
               </div>
 
+              {/* Comment */}
+
               <div className="review-form-group">
-                <label>Review</label>
+
+                <label htmlFor="comment">
+                  Your Review
+                </label>
+
                 <textarea
+                  id="comment"
                   placeholder="Write your review here..."
                   value={comment}
-                  onChange={(e) => setComment(e.target.value)}
+                  onChange={(e) =>
+                    setComment(
+                      e.target.value
+                    )
+                  }
                   required
-                  rows={3}
+                  rows={4}
                 />
+
               </div>
+
+              {/* Submit */}
 
               <button
                 type="submit"
-                disabled={submittingReview}
+                disabled={
+                  submittingReview
+                }
                 className="btn-submit-review"
               >
-                {submittingReview ? "Submitting..." : "Submit Review"}
+                {submittingReview
+                  ? "Submitting..."
+                  : "Submit Review"}
               </button>
+
             </form>
+
           </div>
+
         </div>
       </div>
     </div>
