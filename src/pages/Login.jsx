@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Navbar from "../components/Navbar";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../Context/CartContext";
+import { API_BASE } from "../apiConfig";
 import "../styles/login.css";
 
-const API_BASE_URL = "http://localhost:5000/api/auth";
+const API_BASE_URL = `${API_BASE}/api/auth`;
 
 const Login = () => {
   const [isSignUp, setIsSignUp] = useState(true);

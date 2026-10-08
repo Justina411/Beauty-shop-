@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { PaystackButton } from "react-paystack";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../Context/CartContext";
 import { API_BASE } from "../apiConfig";
 import "../styles/payment.css";
 
