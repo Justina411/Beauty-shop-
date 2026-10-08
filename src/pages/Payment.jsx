@@ -19,7 +19,7 @@ const Payment = ({ total = 0, onClose, onSuccess }) => {
   // Fallback test key prevents button from being disabled if VITE_PAYSTACK_PUBLIC_KEY is not set on Vercel
   const publicKey =
     import.meta.env.VITE_PAYSTACK_PUBLIC_KEY ||
-    "pk_test_1234567890123456789012345678901234567890";
+    "pk_test_c082956a2b65a69aab378aa1c4585a939163b723";
 
   const handlePaystackSuccess = (reference) => {
     setPaymentSuccessful(true);
