@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { API_BASE } from "../apiConfig";
+import { useCart } from "../Context/CartContext";
 import "../styles/productDetail.css";
 
-const ProductDetails = ({ onAddToCart }) => {
+const ProductDetails = () => {
   const { id } = useParams();
+  const { addToCart } = useCart();
 
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState("");
@@ -57,7 +59,7 @@ const ProductDetails = ({ onAddToCart }) => {
           setSelectedImage("");
         }
 
-        // Reset quantity when product changes
+        // Reset quantity
         setQuantity(1);
       } catch (err) {
         setError(err.message);
@@ -127,12 +129,10 @@ const ProductDetails = ({ onAddToCart }) => {
       price: currentPrice,
       image: selectedImage || product.image,
       selectedSize,
-      quantity,
     };
 
-    if (onAddToCart) {
-      onAddToCart(itemPayload);
-    }
+    // Add directly through CartContext
+    addToCart(itemPayload, quantity);
   };
 
   // =========================
