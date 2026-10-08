@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { PaystackButton } from "react-paystack";
 import { useCart } from "../Context/CartContext";
+import { API_BASE } from "../apiConfig";
 import "../styles/payment.css";
 
 const Payment = ({ total = 0, onClose, onSuccess }) => {
@@ -18,15 +19,15 @@ const Payment = ({ total = 0, onClose, onSuccess }) => {
   const publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
 
   const handlePaystackSuccess = (reference) => {
-    // 1. Immediately switch to the big checkmark success screen
+    // 1. Switch to success screen
     setPaymentSuccessful(true);
 
-    // 2. Clear the cart state/localStorage
+    // 2. Clear cart
     if (clearCart) clearCart();
     if (onSuccess) onSuccess();
 
-    // 3. Save order to backend in the background
-    fetch("http://localhost:5000/api/verify-payment", {
+    // 3. Post to backend
+    fetch(`${API_BASE}/api/verify-payment`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -97,9 +98,6 @@ const Payment = ({ total = 0, onClose, onSuccess }) => {
             </div>
           </>
         ) : (
-          /* ========================================================= */
-          /* SUCCESS SCREEN (Big Checkmark + Navigation Buttons)      */
-          /* ========================================================= */
           <div className="payment-success">
             <div className="success-icon">✓</div>
             <h2>Payment Successful!</h2>
