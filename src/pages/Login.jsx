@@ -21,13 +21,14 @@ const Login = () => {
   const [signUpData, setSignUpData] = useState({ name: "", email: "", password: "" });
   const [loginData, setLoginData] = useState({ email: "", password: "" });
 
-  // Helper function to handle pending cart items and navigation post-auth
   const handlePostAuthRedirect = () => {
     const pendingItem = localStorage.getItem("pendingCartItem");
     if (pendingItem) {
       try {
         const item = JSON.parse(pendingItem);
-        addToCart(item, item.quantity || 1);
+        if (addToCart) {
+          addToCart(item, item.quantity || 1);
+        }
         localStorage.removeItem("pendingCartItem");
         navigate("/cart");
         return;
@@ -39,7 +40,6 @@ const Login = () => {
     navigate("/");
   };
 
-  // RESTRICT ACCESS: Redirect to home ONLY if token actually exists
   useEffect(() => {
     const token = localStorage.getItem("auth_token");
     if (token) {
@@ -64,7 +64,6 @@ const Login = () => {
     if (error) setError("");
   };
 
-  // Password Strength Check Rule
   const isStrongPassword = (password) => {
     const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!\%*?&]{8,}$/;
     return strongRegex.test(password);
@@ -96,11 +95,9 @@ const Login = () => {
         throw new Error(data.message || "Signup failed");
       }
 
-      // Save token and user details to log user in
       localStorage.setItem("auth_token", data.token);
       localStorage.setItem("current_user", JSON.stringify(data.user));
 
-      // Process pending cart item or redirect
       handlePostAuthRedirect();
     } catch (err) {
       setError(err.message);
@@ -127,11 +124,9 @@ const Login = () => {
         throw new Error(data.message || "Login failed");
       }
 
-      // Save token and user details to log user in
       localStorage.setItem("auth_token", data.token);
       localStorage.setItem("current_user", JSON.stringify(data.user));
 
-      // Process pending cart item or redirect
       handlePostAuthRedirect();
     } catch (err) {
       setError(err.message);
@@ -146,8 +141,6 @@ const Login = () => {
 
       <div className="auth-page">
         <div className={`auth-container ${isSignUp ? "signup-mode" : "login-mode"}`}>
-          
-          {/* SLIDING OVERLAY PANEL */}
           <div className="overlay-panel">
             {isSignUp ? (
               <>
@@ -168,7 +161,6 @@ const Login = () => {
             )}
           </div>
 
-          {/* LEFT SIDE: LOGIN */}
           <div className="form-box login-box">
             <h2>Login to Beauty Shop</h2>
             <p>Welcome back! Please enter your details.</p>
@@ -215,7 +207,6 @@ const Login = () => {
             </form>
           </div>
 
-          {/* RIGHT SIDE: SIGN UP */}
           <div className="form-box signup-box">
             <h2>Create Account</h2>
             <p>Fill in your details below to get started.</p>
@@ -273,7 +264,6 @@ const Login = () => {
               </button>
             </form>
           </div>
-
         </div>
       </div>
     </>

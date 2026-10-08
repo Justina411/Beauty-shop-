@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useCart } from "../Context/CartContext";
 import { API_BASE } from "../apiConfig";
 import "../styles/productDetail.css";
 
-const ProductDetails = ({ onAddToCart }) => {
+const ProductDetails = ({ onAddToCart: propsOnAddToCart }) => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const contextCart = useCart();
+  
+  // Use prop if passed, otherwise fallback to CartContext
+  const handleCartAdd = propsOnAddToCart || contextCart?.addToCart;
 
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState("");
@@ -115,16 +120,7 @@ const ProductDetails = ({ onAddToCart }) => {
   const handleAddToCart = () => {
     if (!product) return;
 
-    // Authentication Guard
-    const token = localStorage.getItem("auth_token");
-    if (!token) {
-      alert("Please log in to add items to your cart.");
-      navigate("/login");
-      return;
-    }
-
     const productId = product._id || product.id;
-
     const itemPayload = {
       _id: productId,
       id: productId,
@@ -136,9 +132,20 @@ const ProductDetails = ({ onAddToCart }) => {
       quantity,
     };
 
-    if (onAddToCart) {
-      onAddToCart(itemPayload);
+    // Authentication Guard
+    const token = localStorage.getItem("auth_token");
+    if (!token) {
+      localStorage.setItem("pendingCartItem", JSON.stringify(itemPayload));
+      alert("Please log in to add items to your cart.");
+      navigate("/login");
+      return;
+    }
+
+    if (handleCartAdd) {
+      handleCartAdd(itemPayload, quantity);
       alert("Added to cart successfully!");
+    } else {
+      console.error("No cart add function found.");
     }
   };
 
