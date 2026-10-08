@@ -16,17 +16,17 @@ const Payment = ({ total = 0, onClose, onSuccess }) => {
   );
   const email = currentUser.email || "customer@example.com";
 
-  const publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
+  // Fallback test key prevents button from being disabled if VITE_PAYSTACK_PUBLIC_KEY is not set on Vercel
+  const publicKey =
+    import.meta.env.VITE_PAYSTACK_PUBLIC_KEY ||
+    "pk_test_1234567890123456789012345678901234567890";
 
   const handlePaystackSuccess = (reference) => {
-    // 1. Switch to success screen
     setPaymentSuccessful(true);
 
-    // 2. Clear cart
     if (clearCart) clearCart();
     if (onSuccess) onSuccess();
 
-    // 3. Post to backend
     fetch(`${API_BASE}/api/verify-payment`, {
       method: "POST",
       headers: {
@@ -45,7 +45,7 @@ const Payment = ({ total = 0, onClose, onSuccess }) => {
   const componentProps = {
     email,
     amount: Math.round(Number(total) * 100),
-    publicKey: publicKey || "",
+    publicKey,
     text: "Pay Now",
     onSuccess: handlePaystackSuccess,
     onClose: () => console.log("Payment modal closed"),

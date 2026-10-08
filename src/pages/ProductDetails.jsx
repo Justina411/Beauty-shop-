@@ -138,6 +138,7 @@ const ProductDetails = ({ onAddToCart }) => {
 
     if (onAddToCart) {
       onAddToCart(itemPayload);
+      alert("Added to cart successfully!");
     }
   };
 
