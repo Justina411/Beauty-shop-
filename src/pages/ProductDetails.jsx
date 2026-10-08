@@ -9,7 +9,6 @@ const ProductDetails = ({ onAddToCart: propsOnAddToCart }) => {
   const navigate = useNavigate();
   const contextCart = useCart();
   
-  // Use prop if passed, otherwise fallback to CartContext
   const handleCartAdd = propsOnAddToCart || contextCart?.addToCart;
 
   const [product, setProduct] = useState(null);
@@ -20,12 +19,20 @@ const ProductDetails = ({ onAddToCart: propsOnAddToCart }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Styled Toast Notification State
+  const [toast, setToast] = useState({ show: false, message: "", type: "info" });
+
   // Review form state
   const [reviewerName, setReviewerName] = useState("");
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
   const [reviewMessage, setReviewMessage] = useState("");
+
+  const showToast = (message, type = "success") => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: "", type: "info" }), 3500);
+  };
 
   // =========================
   // FETCH PRODUCT
@@ -47,14 +54,12 @@ const ProductDetails = ({ onAddToCart: propsOnAddToCart }) => {
 
         setProduct(data);
 
-        // Select first available size
         if (data.sizes && data.sizes.length > 0) {
           setSelectedSize(data.sizes[0]);
         } else {
           setSelectedSize("");
         }
 
-        // Select first available image
         if (data.images && data.images.length > 0) {
           setSelectedImage(data.images[0]);
         } else if (data.image) {
@@ -136,16 +141,16 @@ const ProductDetails = ({ onAddToCart: propsOnAddToCart }) => {
     const token = localStorage.getItem("auth_token");
     if (!token) {
       localStorage.setItem("pendingCartItem", JSON.stringify(itemPayload));
-      alert("Please log in to add items to your cart.");
-      navigate("/login");
+      showToast("Please log in to add items to your cart.", "error");
+      setTimeout(() => navigate("/login"), 1200);
       return;
     }
 
     if (handleCartAdd) {
       handleCartAdd(itemPayload, quantity);
-      alert("Added to cart successfully!");
+      showToast("✨ Added to cart successfully!", "success");
     } else {
-      console.error("No cart add function found.");
+      showToast("Could not update cart. Please try again.", "error");
     }
   };
 
@@ -170,7 +175,6 @@ const ProductDetails = ({ onAddToCart: propsOnAddToCart }) => {
 
     const previousReviews = product.reviews || [];
 
-    // Optimistic UI update
     setProduct((prev) => ({
       ...prev,
       reviews: [newReview, ...(prev.reviews || [])],
@@ -195,14 +199,14 @@ const ProductDetails = ({ onAddToCart: propsOnAddToCart }) => {
       setReviewerName("");
       setComment("");
       setRating(5);
-      setReviewMessage("Review added successfully!");
+      showToast("Review submitted successfully!", "success");
     } catch (err) {
       setProduct((prev) => ({
         ...prev,
         reviews: previousReviews,
       }));
 
-      setReviewMessage("Could not post review. Please try again.");
+      showToast("Could not post review. Please try again.", "error");
     } finally {
       setSubmittingReview(false);
     }
@@ -244,6 +248,13 @@ const ProductDetails = ({ onAddToCart: propsOnAddToCart }) => {
 
   return (
     <div className="product-detail-page">
+      {/* FLOATING TOAST NOTIFICATION */}
+      {toast.show && (
+        <div className={`custom-toast toast-${toast.type}`}>
+          {toast.message}
+        </div>
+      )}
+
       <div className="product-container">
         {/* LEFT SIDE - IMAGES */}
         <div className="product-left">
@@ -400,21 +411,6 @@ const ProductDetails = ({ onAddToCart: propsOnAddToCart }) => {
             )}
 
             <form onSubmit={handleReviewSubmit}>
-              {reviewMessage && (
-                <p
-                  style={{
-                    color: reviewMessage.includes("successfully")
-                      ? "#123b23"
-                      : "#a52a2a",
-                    fontWeight: "600",
-                    fontSize: "13px",
-                    marginBottom: "15px",
-                  }}
-                >
-                  {reviewMessage}
-                </p>
-              )}
-
               <div className="review-form-group">
                 <label htmlFor="reviewerName">Your Name</label>
                 <input
