@@ -1,52 +1,37 @@
 import React, { useState } from "react";
 import { API_BASE } from "../apiConfig";
+import { useCart } from "../Context/CartContext";
+import "../styles/cart.css";
 
-const Cart = ({ cartItems, setCartItems }) => {
+const Cart = () => {
+  const {
+    cart,
+    removeFromCart,
+    increaseQuantity,
+    decreaseQuantity,
+    clearCart,
+  } = useCart();
+
   const [loading, setLoading] = useState(false);
   const [checkoutMessage, setCheckoutMessage] = useState("");
 
   // Helper to reliably get product ID
-  const getItemId = (item) => item._id || item.id;
+  const getItemId = (item) => String(item._id || item.id);
 
-  // Key for unique matching when products have size variants
-  const getCartKey = (item) => `${getItemId(item)}-${item.selectedSize || "default"}`;
-
-  const updateQuantity = (id, selectedSize, delta) => {
-    setCartItems((prevItems) =>
-      prevItems
-        .map((item) => {
-          const matchId = getItemId(item) === id;
-          const matchSize = (item.selectedSize || "default") === (selectedSize || "default");
-          
-          if (matchId && matchSize) {
-            const newQty = item.quantity + delta;
-            return newQty > 0 ? { ...item, quantity: newQty } : null;
-          }
-          return item;
-        })
-        .filter(Boolean)
-    );
-  };
-
-  const removeItem = (id, selectedSize) => {
-    setCartItems((prevItems) =>
-      prevItems.filter((item) => {
-        const matchId = getItemId(item) === id;
-        const matchSize = (item.selectedSize || "default") === (selectedSize || "default");
-        return !(matchId && matchSize);
-      })
-    );
-  };
-
+  // Calculate total
   const calculateTotal = () => {
-    return cartItems.reduce(
-      (acc, item) => acc + (item.price || 0) * (item.quantity || 1),
+    return cart.reduce(
+      (acc, item) =>
+        acc +
+        (Number(item.price) || 0) *
+          (Number(item.quantity) || 1),
       0
     );
   };
 
+  // Handle checkout
   const handleCheckout = async () => {
-    if (cartItems.length === 0) return;
+    if (cart.length === 0) return;
 
     setLoading(true);
     setCheckoutMessage("");
@@ -54,120 +39,398 @@ const Cart = ({ cartItems, setCartItems }) => {
     try {
       const response = await fetch(`${API_BASE}/api/orders`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items: cartItems, total: calculateTotal() }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          items: cart,
+          total: calculateTotal(),
+        }),
       });
 
       if (!response.ok) {
-        throw new Error("Checkout failed. Please try again.");
+        throw new Error(
+          "Checkout failed. Please try again."
+        );
       }
 
-      setCartItems([]);
-      setCheckoutMessage("Order placed successfully! Thank you.");
+      // Clear cart through CartContext
+      clearCart();
+
+      setCheckoutMessage(
+        "Order placed successfully! Thank you."
+      );
     } catch (err) {
-      setCheckoutMessage(err.message || "An error occurred during checkout.");
+      setCheckoutMessage(
+        err.message ||
+          "An error occurred during checkout."
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  if (!cartItems || cartItems.length === 0) {
+  // =========================
+  // EMPTY CART
+  // =========================
+
+  if (!cart || cart.length === 0) {
     return (
-      <div className="max-w-4xl mx-auto p-6 text-center">
-        <h2 className="text-2xl font-bold mb-4">Your Shopping Cart</h2>
-        <p className="text-gray-500">Your cart is empty.</p>
+      <div className="cart-page">
+        <div className="empty-cart">
+          <h2>Your Shopping Cart</h2>
+
+          <p>
+            Your cart is empty. Add some beautiful
+            products to get started!
+          </p>
+
+          <a
+            href="/shop"
+            className="continue-shopping"
+          >
+            Continue Shopping
+          </a>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6">Your Shopping Cart</h2>
+    <div className="cart-page">
 
-      {checkoutMessage && (
-        <div className="mb-4 p-4 rounded bg-blue-100 text-blue-800 font-medium">
-          {checkoutMessage}
+      {/* =========================
+          TITLE
+      ========================= */}
+
+      <h1 className="cart-title">
+        Your Shopping Cart
+      </h1>
+
+      {/* =========================
+          SHIPPING PROGRESS
+      ========================= */}
+
+      <div className="shipping-top">
+        <p>
+          You're on your way to receiving your
+          beauty essentials!
+        </p>
+
+        <div className="progress-bar">
+          <div
+            className="progress-fill"
+            style={{
+              width: "70%",
+            }}
+          ></div>
         </div>
-      )}
+      </div>
 
-      <div className="space-y-4">
-        {cartItems.map((item) => {
-          const itemId = getItemId(item);
-          const cartKey = getCartKey(item);
+      {/* =========================
+          CART LAYOUT
+      ========================= */}
 
-          return (
-            <div
-              key={cartKey}
-              className="flex items-center justify-between border p-4 rounded-lg shadow-sm"
-            >
-              <div className="flex items-center space-x-4">
-                <img
-                  src={item.image}
-                  alt={item.title || item.name}
-                  className="w-16 h-16 object-cover rounded"
-                />
-                <div>
-                  <h3 className="font-semibold text-lg">{item.title || item.name}</h3>
-                  {item.selectedSize && (
-                    <p className="text-sm text-gray-500">Size: {item.selectedSize}</p>
-                  )}
-                  <p className="text-green-700 font-medium">${item.price}</p>
-                </div>
-              </div>
+      <div className="cart-container">
 
-              <div className="flex items-center space-x-6">
-                {/* Quantity Controller */}
-                <div className="flex items-center border rounded">
-                  <button
-                    onClick={() => updateQuantity(itemId, item.selectedSize, -1)}
-                    className="px-3 py-1 hover:bg-gray-200 font-bold"
+        {/* =========================
+            LEFT SIDE
+        ========================= */}
+
+        <div className="cart-left">
+
+          <table>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Subtotal</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {cart.map((item) => {
+                const itemId = getItemId(item);
+                const quantity =
+                  Number(item.quantity) || 1;
+                const price =
+                  Number(item.price) || 0;
+
+                return (
+                  <tr
+                    key={`${itemId}-${
+                      item.selectedSize ||
+                      "default"
+                    }`}
                   >
-                    -
-                  </button>
-                  <span className="px-4 py-1">{item.quantity}</span>
-                  <button
-                    onClick={() => updateQuantity(itemId, item.selectedSize, 1)}
-                    className="px-3 py-1 hover:bg-gray-200 font-bold"
-                  >
-                    +
-                  </button>
-                </div>
 
-                {/* Subtotal */}
-                <span className="font-semibold w-20 text-right">
-                  ${((item.price || 0) * (item.quantity || 1)).toFixed(2)}
-                </span>
+                    {/* PRODUCT */}
+                    <td>
+                      <div className="product-information">
 
-                {/* Remove Button */}
-                <button
-                  onClick={() => removeItem(itemId, item.selectedSize)}
-                  className="text-red-500 hover:text-red-700 font-semibold text-sm"
-                >
-                  Remove
-                </button>
-              </div>
+                        <img
+                          src={
+                            item.image ||
+                            "/images/placeholder.jpg"
+                          }
+                          alt={
+                            item.title ||
+                            item.name ||
+                            "Product"
+                          }
+                        />
+
+                        <div>
+                          <h4>
+                            {item.title ||
+                              item.name}
+                          </h4>
+
+                          {item.selectedSize && (
+                            <p>
+                              Size:{" "}
+                              {item.selectedSize}
+                            </p>
+                          )}
+                        </div>
+
+                      </div>
+                    </td>
+
+                    {/* QUANTITY */}
+                    <td>
+                      <div className="quantity-box">
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            decreaseQuantity(
+                              itemId,
+                              item.selectedSize
+                            )
+                          }
+                        >
+                          -
+                        </button>
+
+                        <span>
+                          {quantity}
+                        </span>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            increaseQuantity(
+                              itemId,
+                              item.selectedSize
+                            )
+                          }
+                        >
+                          +
+                        </button>
+
+                      </div>
+                    </td>
+
+                    {/* PRICE */}
+                    <td>
+                      ${price.toFixed(2)}
+                    </td>
+
+                    {/* SUBTOTAL */}
+                    <td>
+                      $
+                      {(
+                        price * quantity
+                      ).toFixed(2)}
+                    </td>
+
+                    {/* REMOVE */}
+                    <td>
+                      <button
+                        type="button"
+                        className="remove-btn"
+                        onClick={() =>
+                          removeFromCart(
+                            itemId,
+                            item.selectedSize
+                          )
+                        }
+                      >
+                        Remove
+                      </button>
+                    </td>
+
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+
+          {/* =========================
+              COUPON
+          ========================= */}
+
+          <div className="coupon-section">
+
+            <div>
+              <h3>Have a coupon?</h3>
+
+              <p>
+                Enter your coupon code to receive
+                a discount.
+              </p>
             </div>
-          );
-        })}
-      </div>
 
-      {/* Summary Footer */}
-      <div className="mt-8 border-t pt-6 flex justify-between items-center">
-        <div>
-          <p className="text-gray-500">Total Amount:</p>
-          <p className="text-3xl font-bold text-green-700">
-            ${calculateTotal().toFixed(2)}
-          </p>
+            <div className="coupon-input">
+              <input
+                type="text"
+                placeholder="Coupon code"
+              />
+
+              <button type="button">
+                Apply
+              </button>
+            </div>
+
+          </div>
+
         </div>
 
-        <button
-          onClick={handleCheckout}
-          disabled={loading}
-          className="bg-black text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-800 disabled:opacity-50 transition"
-        >
-          {loading ? "Processing..." : "Proceed to Checkout"}
-        </button>
+        {/* =========================
+            RIGHT SIDE - SUMMARY
+        ========================= */}
+
+        <div className="cart-right">
+
+          <div className="summary-card">
+
+            <h2>Order Summary</h2>
+
+            <div className="summary-row">
+              <span>Subtotal</span>
+
+              <span>
+                $
+                {calculateTotal().toFixed(2)}
+              </span>
+            </div>
+
+            <div className="summary-row">
+              <span>Shipping</span>
+
+              <span>Free</span>
+            </div>
+
+            <div className="summary-row">
+              <span>Tax</span>
+
+              <span>$0.00</span>
+            </div>
+
+            <div className="summary-total">
+              <span>Total</span>
+
+              <span>
+                $
+                {calculateTotal().toFixed(2)}
+              </span>
+            </div>
+
+            {/* Checkout message */}
+
+            {checkoutMessage && (
+              <div
+                style={{
+                  marginTop: "15px",
+                  padding: "12px",
+                  borderRadius: "8px",
+                  background:
+                    checkoutMessage.includes(
+                      "successfully"
+                    )
+                      ? "#e8f5e9"
+                      : "#fdecec",
+                  color:
+                    checkoutMessage.includes(
+                      "successfully"
+                    )
+                      ? "#0f3d1e"
+                      : "#b02a37",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                }}
+              >
+                {checkoutMessage}
+              </div>
+            )}
+
+            <button
+              type="button"
+              className="checkout-btn"
+              onClick={handleCheckout}
+              disabled={loading}
+            >
+              {loading
+                ? "Processing..."
+                : "Proceed to Checkout"}
+            </button>
+
+            <a
+              href="/shop"
+              className="continue-btn"
+            >
+              Continue Shopping
+            </a>
+
+          </div>
+
+        </div>
+
       </div>
+
+      {/* =========================
+          SHIPPING BANNER
+      ========================= */}
+
+      <div className="shipping-banner">
+
+        <h2>
+          Shop With Confidence
+        </h2>
+
+        <div className="shipping-features">
+
+          <div className="shipping-box">
+            <h3>Free Shipping</h3>
+            <p>
+              Enjoy convenient delivery on
+              eligible orders.
+            </p>
+          </div>
+
+          <div className="shipping-box">
+            <h3>Secure Payment</h3>
+            <p>
+              Your payment information is kept
+              safe and secure.
+            </p>
+          </div>
+
+          <div className="shipping-box">
+            <h3>Quality Products</h3>
+            <p>
+              Carefully selected beauty products
+              for your routine.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   );
 };
