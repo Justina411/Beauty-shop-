@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useCart } from "../Context/CartContext";
-import Payment from "../Payment";
+import Payment from "./Payment";
 import "../styles/cart.css";
 
 const Cart = () => {
